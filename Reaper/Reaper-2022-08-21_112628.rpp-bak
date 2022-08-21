@@ -1,0 +1,288 @@
+<REAPER_PROJECT 0.1 "6.64/win64" 1661106388
+  UNDO_FTS 1661106388
+  RIPPLE 0
+  GROUPOVERRIDE 0 0 0
+  AUTOXFADE 129
+  ENVATTACH 1
+  POOLEDENVATTACH 0
+  MIXERUIFLAGS 11 148
+  PEAKGAIN 1
+  FEEDBACK 0
+  PANLAW 1
+  PROJOFFS 0 0 0
+  MAXPROJLEN 0 600
+  GRID 3455 8 1 8 1 0 0 0
+  TIMEMODE 1 5 -1 30 0 0 -1
+  VIDEO_CONFIG 0 0 256
+  PANMODE 5
+  CURSOR 1.07310269969239
+  ZOOM 384.86530703761088 0 0
+  VZOOMEX 40 0
+  USE_REC_CFG 0
+  RECMODE 1
+  SMPTESYNC 0 30 100 40 1000 300 0 0 1 0 0
+  LOOP 0
+  LOOPGRAN 0 4
+  RECORD_PATH "MediaFiles" ""
+  <RECORD_CFG
+    ZXZhdxgAAA==
+  >
+  <APPLYFX_CFG
+  >
+  RENDER_FILE C:\Users\Aaron\src\JUCEProjects\zerochecker\Builds\TestFiles\
+  RENDER_PATTERN $format\$item
+  RENDER_FMT 0 2 48000
+  RENDER_1X 0
+  RENDER_RANGE 4 0 0 2 1000
+  RENDER_RESAMPLE 10 10 1
+  RENDER_ADDTOPROJ 0
+  RENDER_STEMS 544
+  RENDER_DITHER 0
+  <RENDER_METADATA
+    TAG BWF:Originator "Aaron Cendan"
+    TAG ID3:TDRC $year-$month-$day
+    TAG ID3:TPE1 "Aaron Cendan"
+  >
+  TIMELOCKMODE 1
+  TEMPOENVLOCKMODE 1
+  ITEMMIX 0
+  DEFPITCHMODE 589824 0
+  MISCOPTS 2
+  TAKELANE 1
+  SAMPLERATE 48000 0 0
+  <RENDER_CFG
+    ZXZhdxhYAA==
+  >
+  <RENDER_CFG2
+    Y2FsZhgAAAAFAAAA
+  >
+  LOCK 1
+  <METRONOME 6 2
+    VOL 0.25 0.125
+    FREQ 800 1600 1
+    BEATLEN 4
+    SAMPLES "" ""
+    PATTERN 2863311530 2863311529
+    MULT 1
+  >
+  GLOBAL_AUTO -1
+  TEMPO 120 4 4
+  PLAYRATE 1 0 0.25 4
+  SELECTION 3.54149874014703 0.4910808964694
+  SELECTION2 3.54149874014703 0.4910808964694
+  MASTERAUTOMODE 0
+  MASTERTRACKHEIGHT 0 0
+  MASTERPEAKCOL 16576
+  MASTERMUTESOLO 0
+  MASTERTRACKVIEW 0 0.685161 0.5 0.031199 0 0 0 0 0 0 -1 -1 0
+  MASTERHWOUT 0 0 1 0 0 0 0 -1
+  MASTER_NCH 2 2
+  MASTER_VOLUME 1 0 -1 -1 1
+  MASTER_FX 1
+  MASTER_SEL 0
+  <MASTERFXLIST
+    SHOW 0
+    LASTSEL 3
+    DOCKED 0
+    BYPASS 0 0 0
+    <VST "VST: ReaStream (Cockos) (8ch)" reastream.dll 0 ReaStream 1920169074<5653547273747272656173747265616D> ""
+      cnRzcu5e7f4IAAAAAQAAAAAAAAACAAAAAAAAAAQAAAAAAAAACAAAAAAAAAAQAAAAAAAAACAAAAAAAAAAQAAAAAAAAACAAAAAAAAAAAgAAAABAAAAAAAAAAIAAAAAAAAA
+      BAAAAAAAAAAIAAAAAAAAABAAAAAAAAAAIAAAAAAAAABAAAAAAAAAAIAAAAAAAAAArAAAAAEAAAAAABAA
+      AQAAAAIAAAABAAAAZGVmYXVsdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAqIGxvY2FsIGJyb2FkY2FzdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      AFByb2dyYW0gMQAQAAAA
+    >
+    PRESETNAME "Program 1"
+    FLOATPOS 0 0 0 0
+    FXID {105A2D75-6950-45F3-945E-72A10BC273AB}
+    WAK 0 0
+    BYPASS 0 0 0
+    <JS "BirdBird ReaScript Testing/Global Sampler/BirdBird_Global Sampler.jsfx" "Global Sampler"
+      0 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    >
+    JS_DIMS 489 159
+    FLOATPOS 0 0 0 0
+    FXID {664D4D65-0434-4E07-9FDE-A06F5F8FCEFE}
+    WAK 0 0
+    BYPASS 0 0 0
+    <JS analysis/gfxscope Oscilloscope
+      1704.287578 0 0 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    >
+    FLOATPOS 0 0 0 0
+    FXID {90BFE842-8B4B-4090-8CE6-2119C9333A11}
+    WAK 0 2
+    BYPASS 0 0 0
+    <JS analysis/gfxspectrograph Spectrogram
+      6 2 -180 0 1 3 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    >
+    FLOATPOS 0 0 0 0
+    FXID {3E0A7CA8-C03B-4938-BE53-BC07161B813A}
+    WAK 0 2
+    BYPASS 0 0 0
+    <JS ReEQ/ReJJ-1.0.11/ReSpectrum.jsfx "Frequency Analyzer"
+      6 0 0 0 0 1 2 0 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    >
+    FLOATPOS 0 0 0 0
+    FXID {16AAB15A-14B2-4985-BE99-029503A26F2E}
+    WAK 0 2
+    BYPASS 0 0 0
+    <JS loser/gfxGoniometer Goniometer
+      2 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    >
+    FLOATPOS 0 0 0 0
+    FXID {B7156EF0-0C61-485C-9D11-BEBCB2B0FE00}
+    WAK 0 2
+    BYPASS 0 0 0
+    <JS analysis/loudness_meter Loudness
+      4 0 0 2 1 0 1 0 -12 -6 1 0 0 1.8 0 - - - - - - - - - - - - - - 0.05118 -176.075696 -100 -176.851592 -100 -100 0 - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    >
+    FLOATPOS 24 52 505 464
+    FXID {B16E8936-1F8F-4B7A-955C-3A005453A4AF}
+    WAK 0 2
+  >
+  <MASTERPLAYSPEEDENV
+    EGUID {822385D0-D028-4AAB-AE38-58CD0610A158}
+    ACT 0 -1
+    VIS 0 1 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 0 -1 -1
+  >
+  <TEMPOENVEX
+    EGUID {30DF6757-8AC1-4243-935C-09EFA44C805D}
+    ACT 0 -1
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  >
+  <PROJBAY
+  >
+  <TRACK {4CC701E2-6AFC-4383-8FEF-831683869DA5}
+    NAME 2001_Fill
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 -1 -1 -1
+    SEL 1
+    REC 0 -1 0 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 -1 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {4CC701E2-6AFC-4383-8FEF-831683869DA5}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.93539218375123
+      LOOP 0
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {B619FE9F-4376-4AE6-B352-20E5E3C9FDE2}
+      IID 1
+      NAME zero
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {3589DCF9-2C42-4723-B97C-CFDC79331E69}
+      <SOURCE WAVE
+        FILE "MediaFiles\2001_Fill.wav"
+      >
+    >
+    <ITEM
+      POSITION 1.1995819320669
+      SNAPOFFS 0
+      LENGTH 0.80325846340548
+      LOOP 0
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {D96CC205-B183-4E7A-A637-76092B0B4904}
+      IID 2
+      NAME small_non_zero
+      VOLPAN 1 0 1 -1
+      SOFFS 0.00005071375684
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {42B48EAE-42BC-488C-AF8A-90C6583D8127}
+      <SOURCE WAVE
+        FILE "MediaFiles\Noise.wav"
+      >
+    >
+    <ITEM
+      POSITION 2.27871929208288
+      SNAPOFFS 0
+      LENGTH 0.30559118581124
+      LOOP 0
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {6507E8E9-F797-43B0-87E1-624562FDB358}
+      IID 3
+      NAME med_non_zero
+      VOLPAN 1 0 1 -1
+      SOFFS 0.01808611484835
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {11882117-DF49-43DA-8946-703DC56AD9A6}
+      <SOURCE WAVE
+        FILE "MediaFiles\Bongo 7.wav"
+      >
+    >
+    <ITEM
+      POSITION 3.00104992286855
+      SNAPOFFS 0
+      LENGTH 0.23928820831505
+      LOOP 0
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {C36C4FD4-E80E-49D7-8331-E4ACA8B4F843}
+      IID 4
+      NAME clipped
+      VOLPAN 1 0 141.253754 -1
+      SOFFS 0.01808611484835
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {376AB6F9-06B7-4374-8BA5-EB8A85F811A7}
+      <SOURCE WAVE
+        FILE "MediaFiles\Bongo 7.wav"
+      >
+    >
+  >
+  <EXTENSIONS
+    <SWSAUTOCOLOR
+      {00000000-0000-0000-0000-000000000000} 0 "" "" ""
+      {4CC701E2-6AFC-4383-8FEF-831683869DA5} 0 "" "" ""
+    >
+    S&M_PROJACTION _b730e102d4a28448bdb53b39fb367743
+  >
+  <EXTSTATE
+    <TIME
+      D 0
+      H 0
+      M 22.0
+      S 16.0
+    >
+  >
+>
