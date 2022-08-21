@@ -1,20 +1,15 @@
-/*
-  ==============================================================================
-
-    This file contains the basic startup code for a JUCE application.
-
-  ==============================================================================
-*/
+// Aaron Cendan 2022
 
 #include <JuceHeader.h>
 
 //==============================================================================
 int main (int argc, char* argv[])
 {
-
-    juce::String str{ "Hello world!" };
-	std::cout << str << std::endl;
-
+	for (auto i{ 1 }; i < argc; ++i)
+	{
+		juce::String str{ argv[i] };
+		std::cout << str << std::endl;
+	}
 
     return 0;
 }
