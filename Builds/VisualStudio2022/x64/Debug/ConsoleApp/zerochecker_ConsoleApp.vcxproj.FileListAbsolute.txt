@@ -1,1 +1,0 @@
-C:\Users\Aaron\src\JUCEProjects\zerochecker\Builds\VisualStudio2022\x64\Debug\ConsoleApp\zerochecker.exe
