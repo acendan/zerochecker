@@ -16,15 +16,19 @@
 namespace zero
 {
     //==============================================================================
-    class Console
+    class ConsoleTable
     {
     public:
-        Console();
+        ConsoleTable(const std::optional<juce::String>& csv = std::nullopt);
 
         void print();
-        void appendZeroFile(const zero::File& file);
+        void append(const std::initializer_list<const char*>& row);
+        void append(const zero::File& file);
 
     private:
         samilton::ConsoleTable m_table{};
+
+        std::optional<juce::File> m_csv{};
+        std::optional<juce::String> m_csvText{};
     };
 }

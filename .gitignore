@@ -1,1 +1,3 @@
 Builds/VisualStudio2022/.vs/*
+Builds/VisualStudio2022/x64/Debug/ConsoleApp/*
+!Builds/VisualStudio2022/x64/Debug/ConsoleApp/zerochecker.exe

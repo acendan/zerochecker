@@ -24,7 +24,8 @@ namespace zero
         juce::int64 m_lastNonZeroSample{};
         juce::RelativeTime m_lastNonZeroTime{};
 
-        void calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset = 0, juce::int64 numSamplesToSearch = -1, double magnitudeRangeMin = 0.001, double magnitudeRangeMax = 1.0, int minConsecutiveSamples = 0);
+        void calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset = 0, juce::int64 numSamplesToSearch = -1, 
+            double magnitudeRangeMin = 0.005, double magnitudeRangeMax = 1.0, int minConsecutiveSamples = 0);
         
         juce::String toString() const;
         static juce::String relTimeToString(const juce::RelativeTime& t);
@@ -37,7 +38,7 @@ namespace zero
         Checker(std::vector<File>&& files);
 
         void processFiles();
-
+    
     private:
         std::vector<File> m_files;
 

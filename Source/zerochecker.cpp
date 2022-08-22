@@ -138,7 +138,7 @@ namespace
 	}
 }
 
-void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset /*= 0*/, juce::int64 numSamplesToSearch /*= -1*/, double magnitudeRangeMin /*= 0.001*/, double magnitudeRangeMax /*= 1.0*/, int minConsecutiveSamples /*= 0*/)
+void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset /*= 0*/, juce::int64 numSamplesToSearch /*= -1*/, double magnitudeRangeMin /*= 0.005*/, double magnitudeRangeMax /*= 1.0*/, int minConsecutiveSamples /*= 0*/)
 {
 	if (numSamplesToSearch == -1)
 	{
@@ -162,7 +162,9 @@ juce::String File::relTimeToString(const juce::RelativeTime& t)
 {
 	auto str{ juce::String(t.inSeconds()) };
 	auto prd{ str.indexOfChar('.') };
-	return ((prd > -1) ? str.substring(0, prd + 3) : str) + "s";
+
+	// #TODO: Expose number of places after decimal
+	return ((prd > -1) ? str.substring(0, prd + 4) : str);
 }
 
 Checker::Checker(std::vector<File>&& files) : m_files(files)
@@ -173,16 +175,15 @@ Checker::Checker(std::vector<File>&& files) : m_files(files)
 
 void Checker::processFiles()
 {
-	zero::Console console;
+	// #TODO: Pass in file string OR nullopt where applicable
+	ConsoleTable console{ "C:\\Users\\Aaron\\src\\JUCEProjects\\zerochecker\\Builds\\TestFiles\\out.csv" };
 	
 	for (auto& zeroFile : m_files)
     {
 		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
         {
 			zeroFile.calculate(reader);
-			// std::cout << zeroFile.toString() << '\n';
-
-			console.appendZeroFile(zeroFile);
+			console.append(zeroFile);
 
 			delete reader;
         }
