@@ -14,6 +14,7 @@
 
 namespace zero 
 {
+    //==============================================================================
     struct File
     {
         juce::File m_file;
@@ -24,9 +25,12 @@ namespace zero
         juce::RelativeTime m_lastNonZeroTime{};
 
         void calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset = 0, juce::int64 numSamplesToSearch = -1, double magnitudeRangeMin = 0.001, double magnitudeRangeMax = 1.0, int minConsecutiveSamples = 0);
+        
         juce::String toString() const;
+        static juce::String relTimeToString(const juce::RelativeTime& t);
     };
 
+    //==============================================================================
     class Checker
     {
     public:

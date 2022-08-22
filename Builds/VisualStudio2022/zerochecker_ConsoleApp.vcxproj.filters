@@ -595,7 +595,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Main.cpp">
+    <ClCompile Include="..\..\Source\console.cpp">
+      <Filter>zerochecker\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\main.cpp">
       <Filter>zerochecker\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\zerochecker.cpp">
@@ -2997,6 +3000,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\console.h">
+      <Filter>zerochecker\Header</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\zerochecker.h">
       <Filter>zerochecker\Header</Filter>
     </ClInclude>

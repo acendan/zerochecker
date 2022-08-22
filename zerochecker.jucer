@@ -2,13 +2,15 @@
 
 <JUCERPROJECT id="DkDVB1" name="zerochecker" projectType="consoleapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              cppLanguageStandard="20">
+              cppLanguageStandard="20" headerPath="..\..\Vendor\CppConsoleTable">
   <MAINGROUP id="mNXs8E" name="zerochecker">
     <GROUP id="{AD834137-EC2D-BB9B-88D7-DAB72A900D2F}" name="Source">
-      <FILE id="VYslb5" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="Nd9Ext" name="console.cpp" compile="1" resource="0" file="Source/console.cpp"/>
+      <FILE id="VYslb5" name="main.cpp" compile="1" resource="0" file="Source/main.cpp"/>
       <FILE id="reIBrc" name="zerochecker.cpp" compile="1" resource="0" file="Source/zerochecker.cpp"/>
     </GROUP>
     <GROUP id="{F7148480-63BE-7034-38AA-6EBD3DDC419B}" name="Header">
+      <FILE id="FdqFsh" name="console.h" compile="0" resource="0" file="Source/console.h"/>
       <FILE id="KYzerg" name="zerochecker.h" compile="0" resource="0" file="Source/zerochecker.h"/>
     </GROUP>
   </MAINGROUP>

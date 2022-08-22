@@ -3,12 +3,13 @@
 
     zerochecker.cpp
     Created: 21 Aug 2022 10:05:47am
-    Author:  Aaron
+    Author:  Aaron Cendan
 
   ==============================================================================
 */
 
 #include "zerochecker.h"
+#include "console.h"
 
 using namespace zero;
 
@@ -152,16 +153,16 @@ void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOff
 
 juce::String File::toString() const
 {
-	auto fmt = [](const juce::RelativeTime& t)
-	{
-		auto str{ juce::String(t.inSeconds()) };
-		auto prd{ str.indexOfChar('.') };
-		return ((prd > -1) ? str.substring(0, prd + 3) : str) + "s";
-	};
-
 	return m_file.getFileName() + " - " +
-		juce::String(m_firstNonZeroSample) + " (" + fmt(m_firstNonZeroTime) + ") - " +
-		juce::String(m_lastNonZeroSample) + " (" + fmt(m_lastNonZeroTime) + ")";
+		juce::String(m_firstNonZeroSample) + " (" + relTimeToString(m_firstNonZeroTime) + ") - " +
+		juce::String(m_lastNonZeroSample) + " (" + relTimeToString(m_lastNonZeroTime) + ")";
+}
+
+juce::String File::relTimeToString(const juce::RelativeTime& t)
+{
+	auto str{ juce::String(t.inSeconds()) };
+	auto prd{ str.indexOfChar('.') };
+	return ((prd > -1) ? str.substring(0, prd + 3) : str) + "s";
 }
 
 Checker::Checker(std::vector<File>&& files) : m_files(files)
@@ -172,14 +173,20 @@ Checker::Checker(std::vector<File>&& files) : m_files(files)
 
 void Checker::processFiles()
 {
+	zero::Console console;
+	
 	for (auto& zeroFile : m_files)
     {
 		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
         {
 			zeroFile.calculate(reader);
-			std::cout << zeroFile.toString() << '\n';
+			// std::cout << zeroFile.toString() << '\n';
+
+			console.appendZeroFile(zeroFile);
 
 			delete reader;
         }
     }
+
+	console.print();
 }
