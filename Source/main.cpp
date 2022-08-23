@@ -11,6 +11,7 @@
 #include "zerochecker.h"
 #include "console.h"
 
+
 //==============================================================================
 int main (int argc, char* argv[])
 {
