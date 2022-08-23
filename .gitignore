@@ -1,0 +1,5 @@
+Builds/LinuxMakefile/*
+Builds/TestFiles/*
+Builds/VisualStudio2022/*
+JuceLibraryCode/*
+Reaper/*

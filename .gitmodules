@@ -1,0 +1,3 @@
+[submodule "Vendor/CppConsoleTable"]
+	path = Vendor/CppConsoleTable
+	url = https://github.com/DenisSamilton/CppConsoleTable
