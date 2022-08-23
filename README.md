@@ -42,6 +42,6 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
   that would be greatly appreciated! Feel free to push it as a PR. 
   
 # Special Thanks
-- @nickvonkaenel, for the initial idea/request to make zerochecker!
+- [@nickvonkaenel](https://twitter.com/nickvonkaenel), for the initial idea/request to make zerochecker!
 - DenisSamilton, for making [CppConsoleTable](https://github.com/DenisSamilton/CppConsoleTable/)
 - [JUCE](https://juce.com/), for trivializing many of the potential nuisances in my life
