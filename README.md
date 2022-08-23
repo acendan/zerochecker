@@ -40,3 +40,8 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
   If desired, I can look into adding support for multichannel analysis.
 - I plan on adding a Linux build shortly. If anyone with a Mac & XCode wants to compile a build,
   that would be greatly appreciated! Feel free to push it as a PR. 
+  
+# Special Thanks
+- @nickvonkaenel, for the initial idea/request to make zerochecker!
+- DenisSamilton, for making [CppConsoleTable](https://github.com/DenisSamilton/CppConsoleTable/)
+- [JUCE](https://juce.com/), for trivializing many of the potential nuisances in my life
