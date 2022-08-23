@@ -3,7 +3,7 @@ A command line utility for locating the first and last non-zero samples in audio
 This is particularly useful for checking to see if a file begins or ends at a zero-crossing,
 which can cause clicks and pops when starting playback or at the bounds of loops. 
 
-Aaron Cendan 2022 - [Personal Website/Blog](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
+Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
 
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
