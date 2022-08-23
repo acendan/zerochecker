@@ -37,9 +37,16 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
     
 ## WIP
 - Currently, zerochecker only analyzes up to the first two channels of input files. 
-  If desired, I can look into adding support for multichannel analysis.
-- I plan on adding a Linux build shortly. If anyone with a Mac & XCode wants to compile a build,
-  that would be greatly appreciated! Feel free to push it as a PR. 
+  Need to look into adding support for multichannel analysis.
+- While clicks and pops in looping files are somewhat determined by the offset in timing 
+  and amplitude between first and last samples, quantifying the 'clickiness' could include some
+  pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
+  spectral content, phase, and complex domain representation. Need to investigate further, as 
+  I don't think JUCE currently has an out-of-the-box feature for this.
+- If anyone with a Mac & XCode wants to compile a build, that would be greatly 
+  appreciated! Feel free to push it as a PR. 
+- Linux (Bash) doesn't play nicely with CppConsoleTable's fancy characters; looking
+  into potential alternatives.
   
 # Special Thanks
 - [@nickvonkaenel](https://twitter.com/nickvonkaenel), for the initial idea/request to make zerochecker!
