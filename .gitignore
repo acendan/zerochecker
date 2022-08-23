@@ -1,3 +1,5 @@
+.vs/*
+.idea/*
 Builds/LinuxMakefile/*
 Builds/TestFiles/*
 Builds/VisualStudio2022/*

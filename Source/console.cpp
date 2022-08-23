@@ -139,8 +139,11 @@ int Command::run(const juce::ArgumentList& args)
 	m_addFilelist.command(juce::ArgumentList(args.executableName, filelist));
 
 	// Run zerochecker
-	m_zerochecker.processFiles();
-	
+	if (!m_zerochecker.m_files.empty())
+	{
+		m_zerochecker.processFiles();
+	}
+
 	return 0;
 }
 
