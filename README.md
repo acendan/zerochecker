@@ -3,7 +3,7 @@ A command line utility for locating the first and last non-zero samples in audio
 This is particularly useful for checking to see if a file begins or ends at a zero-crossing,
 which can cause clicks and pops when starting playback or at the bounds of loops. 
 
-Aaron Cendan 2022 - https://aaroncendan.me | https://ko-fi.com/acendan_
+Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
 
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
@@ -37,6 +37,18 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
     
 ## WIP
 - Currently, zerochecker only analyzes up to the first two channels of input files. 
-  If desired, I can look into adding support for multichannel analysis.
-- I plan on adding a Linux build shortly. If anyone with a Mac & XCode wants to compile a build,
-  that would be greatly appreciated! Feel free to push it as a PR. 
+  Need to look into adding support for multichannel analysis.
+- While clicks and pops in looping files are somewhat determined by the offset in timing 
+  and amplitude between first and last samples, quantifying the 'clickiness' could include some
+  pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
+  spectral content, phase, and complex domain representation. Need to investigate further, as 
+  I don't think JUCE currently has an out-of-the-box feature for this.
+- If anyone with a Mac & XCode wants to compile a build, that would be greatly 
+  appreciated! Feel free to push it as a PR. 
+- Linux (Bash) doesn't play nicely with CppConsoleTable's fancy characters; looking
+  into potential alternatives.
+  
+# Special Thanks
+- [@nickvonkaenel](https://twitter.com/nickvonkaenel), for the initial idea/request to make zerochecker!
+- DenisSamilton, for making [CppConsoleTable](https://github.com/DenisSamilton/CppConsoleTable/)
+- [JUCE](https://juce.com/), for trivializing many of the potential nuisances in my life

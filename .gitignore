@@ -1,5 +1,9 @@
+.vs/*
+.idea/*
 Builds/LinuxMakefile/*
 Builds/TestFiles/*
 Builds/VisualStudio2022/*
+Builds/MacOSX/*
 JuceLibraryCode/*
 Reaper/*
+.DS_Store
