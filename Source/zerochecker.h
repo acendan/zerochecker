@@ -19,16 +19,13 @@ namespace zero
     // Contains first and last non-zero data for a given audio file
     struct File
     {
-        File(const juce::File file);
-
-
-        juce::File m_file{};
+		juce::File m_file{};
+        File(const juce::File& file):m_file(file) {};
 
 		juce::int64 m_firstNonZeroSample{};
         juce::RelativeTime m_firstNonZeroTime{};
         juce::int64 m_lastNonZeroSample{};
         juce::RelativeTime m_lastNonZeroTime{};
-        
 
         void calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch, 
 			double magnitudeRangeMin, double magnitudeRangeMax, int minConsecutiveSamples);

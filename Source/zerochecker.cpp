@@ -162,10 +162,6 @@ juce::String File::relTimeToString(const juce::RelativeTime& t)
 	return ((prd > -1) ? str.substring(0, prd + 4) : str);
 }
 
-File::File(const juce::File file) {
-    m_file = file;
-}
-
 //==============================================================================
 Checker::Checker()
 {

@@ -11,7 +11,7 @@
 #pragma once
 
 #include "zerochecker.h"
-#include "CppConsoleTable.hpp"
+#include <CppConsoleTable.hpp>
 
 namespace zero
 {
