@@ -20,6 +20,7 @@ namespace zero
     struct File
     {
 		juce::File m_file{};
+        File(const juce::File& file):m_file(file) {};
 
 		juce::int64 m_firstNonZeroSample{};
         juce::RelativeTime m_firstNonZeroTime{};

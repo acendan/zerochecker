@@ -159,7 +159,7 @@ ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullo
     // Init CSV
     if (csv.has_value() && !csv->isEmpty())
     {
-        m_csvFile = juce::File::createLegalPathName(csv.value());
+        m_csvFile = juce::File::createLegalPathName(*csv);
         if (!m_csvFile->hasFileExtension("csv"))
         {
             m_csvFile = m_csvFile->withFileExtension("csv");
@@ -185,7 +185,7 @@ void ConsoleTable::print()
 
 	if (m_csvFile.has_value() && m_csvText.has_value() && m_csvFile->existsAsFile() && !m_csvText->isEmpty())
 	{
-        m_csvFile->replaceWithText(m_csvText.value());
+        m_csvFile->replaceWithText(*m_csvText);
         std::cout << "Output CSV to: " << m_csvFile->getFullPathName() << std::endl;
 	}
 
