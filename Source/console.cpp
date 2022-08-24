@@ -153,7 +153,13 @@ ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullo
     // Init table
     m_table.clear();
     m_table.setIndent(1, 1);
+
+	// Per-platform character encoding for output table (unicode by default)
+#if defined (JUCE_WINDOWS)
 	samilton::ConsoleTable::TableChars chars;
+#else
+	samilton::ConsoleTable::TableChars chars{ '+', '+', '+', '+','-', '+', '+', '|', '+', '+', '+' };
+#endif
 	m_table.setTableChars(chars);
 
     // Init CSV
