@@ -34,12 +34,12 @@ Command::Command()
 				{
 					for (const auto& child : file.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, "*.wav;*.flac"))
 					{
-						m_zerochecker.m_files.push_back(zero::File(child));
+						m_zerochecker.m_files.emplace_back(child);
 					}
 				}
 				else if (file.existsAsFile() && file.hasFileExtension("wav;flac"))
 				{
-					m_zerochecker.m_files.push_back(zero::File(file));
+					m_zerochecker.m_files.emplace_back(zero::File(file));
 				}
 			}
 		} });

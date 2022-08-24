@@ -10,6 +10,7 @@
 
 #include "zerochecker.h"
 #include "console.h"
+#include <utility>
 
 using namespace zero;
 
@@ -23,9 +24,6 @@ namespace
 		double magnitudeRangeMaximum,
 		int minimumConsecutiveSamples)
 	{
-		if (reader == nullptr)
-			return -1;
-
 		if (numSamplesToSearch == 0)
 			return -1;
 
@@ -139,7 +137,9 @@ namespace
 }
 
 //==============================================================================
-void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch, 
+File::File(juce::File file) : m_file{ std::move(file) } {}
+
+void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch,
 	double magnitudeRangeMin, double magnitudeRangeMax, int minConsecutiveSamples)
 {
 	if (numSamplesToSearch == -1)
@@ -148,9 +148,9 @@ void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOff
 	}
 
 	m_firstNonZeroSample = reader->searchForLevel(startSampleOffset, numSamplesToSearch, magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
-	m_firstNonZeroTime = juce::RelativeTime(m_firstNonZeroSample / reader->sampleRate);
+	m_firstNonZeroTime = juce::RelativeTime(static_cast<double>(m_firstNonZeroSample) / reader->sampleRate);
 	m_lastNonZeroSample = reverseSearchForLevel(reader, startSampleOffset, numSamplesToSearch, magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
-	m_lastNonZeroTime = juce::RelativeTime(m_lastNonZeroSample / reader->sampleRate);
+	m_lastNonZeroTime = juce::RelativeTime(static_cast<double>(m_lastNonZeroSample) / reader->sampleRate);
 }
 
 juce::String File::relTimeToString(const juce::RelativeTime& t)

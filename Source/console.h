@@ -40,7 +40,7 @@ namespace zero
     class ConsoleTable
     {
     public:
-        ConsoleTable(const std::optional<juce::String>& csv = std::nullopt);
+        explicit ConsoleTable(const std::optional<juce::String>& csv = std::nullopt);
 
         void print();
         void append(const std::initializer_list<const char*>& row);
