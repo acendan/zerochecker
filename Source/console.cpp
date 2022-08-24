@@ -32,7 +32,7 @@ Command::Command()
 				juce::File file{ arg.resolveAsFile() };
 				if (file.isDirectory())
 				{
-					for (const auto& child : file.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, "*.wav;*.flac"))
+					for (const auto& child : file.findChildFiles(juce::File::TypesOfFileToFind::findFiles, true, "*.wav;*.flac;*.aif;*.aiff;*.mp3"))
 					{
 						m_zerochecker.m_files.push_back(zero::File(child));
 					}
