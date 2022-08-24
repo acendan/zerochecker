@@ -43,12 +43,9 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
   pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
   spectral content, phase, and complex domain representation. Need to investigate further, as 
   I don't think JUCE currently has an out-of-the-box feature for this.
-- If anyone with a Mac & XCode wants to compile a build, that would be greatly 
-  appreciated! Feel free to push it as a PR. 
-- Linux (Bash) doesn't play nicely with CppConsoleTable's fancy characters; looking
-  into potential alternatives.
   
 # Special Thanks
+- [wwerk](https://github.com/wwerk), for making Mac builds of zerochecker!
 - [@nickvonkaenel](https://twitter.com/nickvonkaenel), for the initial idea/request to make zerochecker!
 - DenisSamilton, for making [CppConsoleTable](https://github.com/DenisSamilton/CppConsoleTable/)
 - [JUCE](https://juce.com/), for trivializing many of the potential nuisances in my life
