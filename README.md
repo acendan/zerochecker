@@ -36,6 +36,9 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
 - Long options like '--min' should have an equals sign instead. Refer to USAGE above.
     
 ## WIP
+- The help/man page could use a section explaining what all the numbers actually mean/
+  how you can interpret the data.
+- Sorting options for table columns would be great
 - Currently, zerochecker only analyzes up to the first two channels of input files. 
   Need to look into adding support for multichannel analysis.
 - While clicks and pops in looping files are somewhat determined by the offset in timing 
