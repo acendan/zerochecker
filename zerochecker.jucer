@@ -3,7 +3,7 @@
 <JUCERPROJECT id="DkDVB1" name="zerochecker" projectType="consoleapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               cppLanguageStandard="20" headerPath="../../Vendor/CppConsoleTable"
-              version="0.0.1">
+              version="0.0.2">
   <MAINGROUP id="mNXs8E" name="zerochecker">
     <GROUP id="{AD834137-EC2D-BB9B-88D7-DAB72A900D2F}" name="Source">
       <FILE id="Nd9Ext" name="console.cpp" compile="1" resource="0" file="Source/console.cpp"/>

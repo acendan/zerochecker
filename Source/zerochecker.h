@@ -26,9 +26,12 @@ namespace zero
         juce::RelativeTime m_firstNonZeroTime{};
         juce::int64 m_lastNonZeroSample{};
         juce::RelativeTime m_lastNonZeroTime{};
+		float m_monoCompatibility{ 0.0f };
 
         void calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch, 
 			double magnitudeRangeMin, double magnitudeRangeMax, int minConsecutiveSamples);
+
+        void calculateMonoCompatibility(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch);
         
         static juce::String relTimeToString(const juce::RelativeTime& t);
     };
@@ -47,6 +50,8 @@ namespace zero
 		std::optional<juce::String> m_csv{ std::nullopt };
 		juce::int64 m_sampleOffset{ 0 };
 		juce::int64 m_numSamplesToSearch{ -1 };
+		bool m_monoAnalysisMode{ false };
+		double m_monoAnalysisThreshold{ 0.99 };
 		double m_magnitudeRangeMin{ 0.003 };
 		double m_magnitudeRangeMax{ 1.0 };
 		int m_minConsecutiveSamples{ 0 };

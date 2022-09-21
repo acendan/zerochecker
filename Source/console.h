@@ -28,6 +28,7 @@ namespace zero
 
         juce::ConsoleApplication::Command m_addFilelist{};
         juce::ConsoleApplication::Command m_genCSV{};
+        juce::ConsoleApplication::Command m_monoAnalysis{};
 		juce::ConsoleApplication::Command m_magMin{};
 		juce::ConsoleApplication::Command m_magMax{};
 		juce::ConsoleApplication::Command m_consecSmpls{};
@@ -40,16 +41,23 @@ namespace zero
     class ConsoleTable
     {
     public:
-        explicit ConsoleTable(const std::optional<juce::String>& csv = std::nullopt);
+        explicit ConsoleTable(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0, bool monoAnalysis = false);
 
         void print();
-        void append(const std::initializer_list<const char*>& row);
+        void append(const std::initializer_list<const char*>& row, const juce::String& fullPath = "");
         void append(const zero::File& file);
+        void progressBar();
 
     private:
         samilton::ConsoleTable m_table{};
 
         std::optional<juce::File> m_csvFile{};
         std::optional<juce::String> m_csvText{};
+
+        float m_progress{ 0.0f };
+        int m_progressBarWidth{ 70 };
+        int m_numItems{ 0 };
+
+        bool m_monoAnalysisMode{ false };
     };
 }

@@ -16,6 +16,8 @@ using namespace zero;
 
 namespace
 {
+	constexpr auto s_epsilon{ 0.0005f };
+	
 	// Scan in reverse from end of file; modification of juce::AudioFormatReader::searchForLevel
 	juce::int64 reverseSearchForLevel(juce::AudioFormatReader* reader, 
 		juce::int64 endSampleOffset,
@@ -162,6 +164,48 @@ juce::String File::relTimeToString(const juce::RelativeTime& t)
 	return ((prd > -1) ? str.substring(0, prd + 4) : str);
 }
 
+void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch)
+{
+	const auto numChannels{ static_cast<int>(reader->numChannels) };
+	const auto numSamples{ static_cast<int>((numSamplesToSearch > 0) ? numSamplesToSearch : reader->lengthInSamples) };
+	const auto compatibilityIncr{ 1.0f / static_cast<float>(numSamples - startSampleOffset) };
+
+	if (numChannels == 1)
+	{
+		m_monoCompatibility = -1.0f;
+		return;
+	}
+	
+	juce::AudioSampleBuffer buffer{ numChannels, numSamples };
+	reader->read(&buffer, 0, numSamples, 0, true, true);
+
+	std::vector<float> sampleBuffer;
+	for (auto sample{ startSampleOffset }; sample < numSamples; ++sample)
+	{
+		sampleBuffer.clear();
+		sampleBuffer.reserve(numChannels);
+		
+		for (auto channel{ 0 }; channel < numChannels; ++channel)
+		{
+			auto channelData{ buffer.getReadPointer(channel) };
+			sampleBuffer.emplace_back(channelData[sample]);
+		}
+
+		// Check if all channels are equal to the first element
+		auto equalsFirstSample = [&sampleBuffer](float f) 
+		{ 
+			return std::abs(f - sampleBuffer[0]) < s_epsilon; 
+		};
+		
+		if (std::all_of(sampleBuffer.begin() + 1, sampleBuffer.end(), equalsFirstSample))
+		{
+			m_monoCompatibility += compatibilityIncr;
+		}
+	}
+
+	m_monoCompatibility = std::min(m_monoCompatibility, 1.0f);
+}
+
 //==============================================================================
 Checker::Checker()
 {
@@ -170,18 +214,33 @@ Checker::Checker()
 
 void Checker::processFiles()
 {
-	ConsoleTable console{ m_csv };
-	
+	ConsoleTable console{ m_csv, static_cast<int>(m_files.size()), m_monoAnalysisMode };
+
 	for (auto& zeroFile : m_files)
-    {
+	{
+		console.progressBar();
+		
 		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
-        {
-			zeroFile.calculate(reader, m_sampleOffset, m_numSamplesToSearch, m_magnitudeRangeMin, m_magnitudeRangeMax, m_minConsecutiveSamples);
-			console.append(zeroFile);
+		{
+			if (m_monoAnalysisMode)
+			{
+				zeroFile.calculateMonoCompatibility(reader, m_sampleOffset, m_numSamplesToSearch);
+				
+				// Only append files above threshold
+				if (zeroFile.m_monoCompatibility > m_monoAnalysisThreshold)
+				{
+					console.append(zeroFile);
+				}
+			}
+			else
+			{
+				zeroFile.calculate(reader, m_sampleOffset, m_numSamplesToSearch, m_magnitudeRangeMin, m_magnitudeRangeMax, m_minConsecutiveSamples);
+				console.append(zeroFile);
+			}
 
 			delete reader;
-        }
-    }
+		}
+	}
 
 	console.print();
 }
