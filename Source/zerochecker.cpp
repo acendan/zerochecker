@@ -168,7 +168,7 @@ void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juc
 {
 	const auto numChannels{ static_cast<int>(reader->numChannels) };
 	const auto numSamples{ static_cast<int>((numSamplesToSearch > 0) ? numSamplesToSearch : reader->lengthInSamples) };
-	const auto compatibilityIncr{ 1.0f / static_cast<float>(numSamples - startSampleOffset) };
+	const auto compatibilityIncr{ 1.0f / static_cast<float>(numSamples) };
 
 	if (numChannels == 1)
 	{
@@ -177,10 +177,10 @@ void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juc
 	}
 	
 	juce::AudioSampleBuffer buffer{ numChannels, numSamples };
-	reader->read(&buffer, 0, numSamples, 0, true, true);
+	reader->read(&buffer, 0, numSamples, startSampleOffset, true, true);
 
 	std::vector<float> sampleBuffer;
-	for (auto sample{ startSampleOffset }; sample < numSamples; ++sample)
+	for (auto sample{ 0 }; sample < numSamples; ++sample)
 	{
 		sampleBuffer.clear();
 		sampleBuffer.reserve(numChannels);
