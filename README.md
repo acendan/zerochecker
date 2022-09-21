@@ -36,6 +36,7 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
 - Long options like '--min' should have an equals sign instead. Refer to USAGE above.
     
 ## WIP
+- Progress bar improvements (only flush to last ===> element using \b)
 - The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
 - Sorting options for table columns would be great
@@ -46,6 +47,7 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
   pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
   spectral content, phase, and complex domain representation. Need to investigate further, as 
   I don't think JUCE currently has an out-of-the-box feature for this.
+- Blog post/video/tutorial content!
   
 # Special Thanks
 - [wwerk](https://github.com/wwerk), for making Mac builds of zerochecker!
