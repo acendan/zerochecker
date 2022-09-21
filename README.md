@@ -43,6 +43,7 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
 - Sorting options for table columns would be great
 - Currently, zerochecker only analyzes up to the first two channels of input files. 
   Need to look into adding support for multichannel analysis.
+- Potentially rewrite zerochecking algorithm using buffer.getMagnitude
 - While clicks and pops in looping files are somewhat determined by the offset in timing 
   and amplitude between first and last samples, quantifying the 'clickiness' could include some
   pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
