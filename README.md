@@ -20,16 +20,16 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
     .\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
 
 ## Options
-    zerochecker_win_v0.0.2.exe -h|--help   Prints the list of commands
-    zerochecker_win_v0.0.2.exe -v|--versionPrints the current version number
+    zerochecker_win_v0.0.2.exe -h|--help        Prints the list of commands
+    zerochecker_win_v0.0.2.exe -v|--version     Prints the current version number
 
     zerochecker_win_v0.0.2.exe -c|--csv <output.csv>   Specify output .csv filepath
-    zerochecker_win_v0.0.2.exe -m|--mono <0.9> Mono folddown compatibility checker. Set threshold (0.0 - 1.0) for output, where 1.0 is identical across all channels.
-    zerochecker_win_v0.0.2.exe -o|--offset <0> Number of samples offset from start/end
-    zerochecker_win_v0.0.2.exe -n|--num <-1>   Number of samples to analyze before stopping (-1 = entire file)
-    zerochecker_win_v0.0.2.exe -s|--consec <0> Number of consecutive samples past threshold to be considered a non-zero
-    zerochecker_win_v0.0.2.exe -x|--max <1.0>  Maximum amplitude considered for non-zeros (0.0 - 1.0)
-    zerochecker_win_v0.0.2.exe -y|--min <0.003>    Minimum amplitude considered for non-zeros (0.0 - 1.0)
+    zerochecker_win_v0.0.2.exe -m|--mono <0.9>         Mono folddown compatibility checker. Set threshold (0.0 - 1.0) for output, where 1.0 is identical across all channels.
+    zerochecker_win_v0.0.2.exe -o|--offset <0>         Number of samples offset from start/end
+    zerochecker_win_v0.0.2.exe -n|--num <-1>           Number of samples to analyze before stopping (-1 = entire file)
+    zerochecker_win_v0.0.2.exe -s|--consec <0>         Number of consecutive samples past threshold to be considered a non-zero
+    zerochecker_win_v0.0.2.exe -x|--max <1.0>          Maximum amplitude considered for non-zeros (0.0 - 1.0)
+    zerochecker_win_v0.0.2.exe -y|--min <0.003>        Minimum amplitude considered for non-zeros (0.0 - 1.0)
     
 ## Note
 - Short options like '-m' should have a space, followed by the desired value.
