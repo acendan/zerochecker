@@ -36,7 +36,7 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
 - Long options like '--min' should have an equals sign instead. Refer to USAGE above.
     
 ## Mono Folddown Compatibility Checker (-m|--mono)
-This mode allows you to scan multi-channel audio files for mono compatibility. In other words, it checks to see if all of the channels in that file contain the exact same information. 
+This mode allows you to scan multi-channel audio files for mono compatibility. In other words, it checks to see if all of the channels in that file contain the exact same information. Requires zerochecker v0.0.2+.
  
 ### Why does that matter?
 Most importantly, it means that you can easily batch process those multichannel files to just be mono. This saves a significant chunk of memory (~half the size for a stereo file, ~quarter of the size for quad, you get the point). In the case of game development, it also means you could be saving a bit of CPU overhead on decoding and processing multichannel assets. This can also help improve those assets' in-game spatialization, which often relies on time-based delays between channels and can inadvertently create a subtle Haas effect if multichannel assets contain the same content in each channel.
@@ -45,6 +45,8 @@ Most importantly, it means that you can easily batch process those multichannel 
 The compatibility factor in the output log is a scale of 0.0 - 1.0, where 1.0 means there is a perfect sample-accurate match between channels. If you want to just process files that are exactly the same (1.0), then you can go ahead and do that; though I encourage you to take a look at some of the 0.90-0.95 matches, you can probably convert those to mono too.
  
 Once you've got a list of files that you want to fold to mono, you can sprinkle some scripting magic to check them all out in your version control platform of choice and overwrite them as mono. Reaper's batch processor is great for overwriting assets as mono. 
+
+![image](https://user-images.githubusercontent.com/65690085/191663408-f142029a-96f6-4eec-a2cd-ba5787cbe071.png)
     
 ## WIP
 - Accept .csv file or text file with filepaths as input
