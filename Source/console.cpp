@@ -269,13 +269,22 @@ void ConsoleTable::progressBar()
 	if (m_numItems > 0)
 	{
 		std::cout << "[";
-		m_progress += 1.0f / m_numItems;
-		int pos = m_progressBarWidth * static_cast<int>(m_progress);
+		m_progress += 1.0f / static_cast<float>(m_numItems);
+		int pos = static_cast<int>(m_progressBarWidth * m_progress);
 		for (int i = 0; i < m_progressBarWidth; ++i)
 		{
-			if (i < pos) std::cout << "=";
-			else if (i == pos) std::cout << ">";
-			else std::cout << " ";
+			if (i < pos)
+			{
+				std::cout << "=";
+			}
+			else if (i == pos)
+			{
+				std::cout << ">";
+			}
+			else
+			{
+				std::cout << " ";
+			}
 		}
 		std::cout << "] " << static_cast<int>(m_progress * 100.0f) << "% (" << ++item << "/" << m_numItems << ")\r";
 		std::cout.flush();
