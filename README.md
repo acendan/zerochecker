@@ -37,7 +37,6 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
     
 ## WIP
 - Accept .csv file or text file with filepaths as input
-- Progress bar improvements (only flush to last ===> element using \b)
 - The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
 - Sorting options for table columns would be great
