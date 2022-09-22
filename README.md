@@ -35,6 +35,7 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
 - Short options like '-m' should have a space, followed by the desired value.
 - Long options like '--min' should have an equals sign instead. Refer to USAGE above.
     
+
 ## Mono Folddown Compatibility Checker (-m|--mono)
 This mode allows you to scan multi-channel audio files for mono compatibility. In other words, it checks to see if all of the channels in that file contain the exact same information. Requires zerochecker v0.0.2+.
  
@@ -48,6 +49,7 @@ Once you've got a list of files that you want to fold to mono, you can sprinkle 
 
 ![image](https://user-images.githubusercontent.com/65690085/191663408-f142029a-96f6-4eec-a2cd-ba5787cbe071.png)
     
+
 ## WIP
 - Accept .csv file or text file with filepaths as input
 - The help/man page could use a section explaining what all the numbers actually mean/
