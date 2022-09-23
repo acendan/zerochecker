@@ -11,6 +11,7 @@
 #include "zerochecker.h"
 #include "console.h"
 #include <utility>
+#include <execution>
 
 using namespace zero;
 
@@ -216,30 +217,55 @@ void Checker::processFiles()
 {
 	ConsoleTable console{ m_csv, static_cast<int>(m_files.size()), m_monoAnalysisMode };
 
-	for (auto& zeroFile : m_files)
+	std::mutex m;
+
+	auto updateProgress = [&m, &console]()
 	{
+		std::lock_guard<std::mutex> guard(m);
 		console.progressBar();
-		
+	};
+
+	auto appendZeroFile = [&m, &console](const File& zeroFile)
+	{
+		std::lock_guard<std::mutex> guard(m);
+		console.append(zeroFile);
+	};
+
+	auto monoAnalyze = [&](File& zeroFile)
+	{
+		updateProgress();
 		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
 		{
-			if (m_monoAnalysisMode)
+			zeroFile.calculateMonoCompatibility(reader, m_sampleOffset, m_numSamplesToSearch);
+
+			// Only append files above threshold
+			if (zeroFile.m_monoCompatibility > m_monoAnalysisThreshold)
 			{
-				zeroFile.calculateMonoCompatibility(reader, m_sampleOffset, m_numSamplesToSearch);
-				
-				// Only append files above threshold
-				if (zeroFile.m_monoCompatibility > m_monoAnalysisThreshold)
-				{
-					console.append(zeroFile);
-				}
+				appendZeroFile(zeroFile);
 			}
-			else
-			{
-				zeroFile.calculate(reader, m_sampleOffset, m_numSamplesToSearch, m_magnitudeRangeMin, m_magnitudeRangeMax, m_minConsecutiveSamples);
-				console.append(zeroFile);
-			}
+		}
+	};
+
+	auto zeroCheck = [&](File& zeroFile)
+	{
+		updateProgress();
+		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
+		{
+			zeroFile.calculate(reader, m_sampleOffset, m_numSamplesToSearch, m_magnitudeRangeMin, m_magnitudeRangeMax, m_minConsecutiveSamples);
+			appendZeroFile(zeroFile);
 
 			delete reader;
 		}
+	};
+
+	// Execute in parallel
+	if (m_monoAnalysisMode)
+	{
+		std::for_each(std::execution::par_unseq, m_files.begin(), m_files.end(), monoAnalyze);
+	}
+	else
+	{
+		std::for_each(std::execution::par_unseq, m_files.begin(), m_files.end(), zeroCheck);
 	}
 
 	console.print();
