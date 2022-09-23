@@ -20,24 +20,38 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
     .\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
 
 ## Options
-    -h|--help              Prints the list of commands
-    -v|--version           Prints the current version number
-    
-    <files> <folders>      Files and/or folders to analyze. Recursively analyzes all .wav and .flac files in folders.
-    -c|--csv <output.csv>  Specify output .csv filepath. Generates CSV file from zerochecker output.
-    -m|--min <0.003>       Minimum amplitude considered for non-zeros (0.0 - 1.0)
-    -x|--max <1.0>         Maximum amplitude considered for non-zeros (0.0 - 1.0)
-    -s|--consec <0>        Number of consecutive samples past threshold to be considered a non-zero
-    -o|--offset <0>        Number of samples offset from start/end
-    -n|--num <-1>          Number of samples to analyze before stopping (-1 = entire file)
+    -h|--help        Prints the list of commands
+    -v|--version     Prints the current version number
+
+    -c|--csv <output.csv>   Specify output .csv filepath
+    -m|--mono <0.9>         Mono folddown compatibility checker. Set threshold (0.0 - 1.0) for output, where 1.0 is identical across all channels.
+    -o|--offset <0>         Number of samples offset from start/end
+    -n|--num <-1>           Number of samples to analyze before stopping (-1 = entire file)
+    -s|--consec <0>         Number of consecutive samples past threshold to be considered a non-zero
+    -x|--max <1.0>          Maximum amplitude considered for non-zeros (0.0 - 1.0)
+    -y|--min <0.003>        Minimum amplitude considered for non-zeros (0.0 - 1.0)
     
 ## Note
 - Short options like '-m' should have a space, followed by the desired value.
 - Long options like '--min' should have an equals sign instead. Refer to USAGE above.
     
+
+## Mono Folddown Compatibility Checker (-m|--mono)
+This mode allows you to scan multi-channel audio files for mono compatibility. In other words, it checks to see if all of the channels in that file contain the exact same information. Requires zerochecker v0.0.2+.
+ 
+### Why does that matter?
+Most importantly, it means that you can easily batch process those multichannel files to just be mono. This saves a significant chunk of memory (~half the size for a stereo file, ~quarter of the size for quad, you get the point). In the case of game development, it also means you could be saving a bit of CPU overhead on decoding and processing multichannel assets. This can also help improve those assets' in-game spatialization, which often relies on time-based delays between channels and can inadvertently create a subtle Haas effect if multichannel assets contain the same content in each channel.
+ 
+### What does the Mono Compatibility output mean?
+The compatibility factor in the output log is a scale of 0.0 - 1.0, where 1.0 means there is a perfect sample-accurate match between channels. If you want to just process files that are exactly the same (1.0), then you can go ahead and do that; though I encourage you to take a look at some of the 0.90-0.95 matches, you can probably convert those to mono too.
+ 
+Once you've got a list of files that you want to fold to mono, you can sprinkle some scripting magic to check them all out in your version control platform of choice and overwrite them as mono. Reaper's batch processor is great for overwriting assets as mono. 
+
+![image](https://user-images.githubusercontent.com/65690085/191663408-f142029a-96f6-4eec-a2cd-ba5787cbe071.png)
+    
+
 ## WIP
 - Accept .csv file or text file with filepaths as input
-- Progress bar improvements (only flush to last ===> element using \b)
 - The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
 - Sorting options for table columns would be great
