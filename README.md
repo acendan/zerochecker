@@ -53,8 +53,9 @@ Once you've got a list of files that you want to fold to mono, you can sprinkle 
 ## WIP
 - Accept .csv file or text file with filepaths as input
 - Provide stats (number of files hit/not hit, total size potentially saved by conversion to mono, etc)
+- Generate Reaper batch converter script 
 - Complete the wiki... (better explanation of using via command line)
-- Open command line if run via double click??
+- Open command line if run via double click in Explorer??
 - The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
 - Sorting options for table columns would be great
