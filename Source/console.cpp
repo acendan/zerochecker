@@ -165,6 +165,10 @@ ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullo
     m_table.clear();
     m_table.setIndent(1, 1);
 
+	// Init stats
+	m_stats.clear();
+	m_stats.setIndent(1, 1);
+
 	// Per-platform character encoding for output table (unicode by default)
 #if defined (JUCE_WINDOWS)
 	samilton::ConsoleTable::TableChars chars;
@@ -172,6 +176,7 @@ ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullo
 	samilton::ConsoleTable::TableChars chars{ '+', '+', '+', '+','-', '+', '+', '|', '+', '+', '+' };
 #endif
 	m_table.setTableChars(chars);
+	m_stats.setTableChars(chars);
 
     // Init CSV
     if (csv.has_value() && !csv->isEmpty())
@@ -194,11 +199,15 @@ ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullo
 	{
 		append({ "File Name", "First Non-Zero (smpls)", "First Non-Zero (sec)", "Last Non-Zero (smpls)", "Last Non-Zero (sec)" });
 	}
+
+	m_startTime = juce::Time::getCurrentTime();
 }
 
 void ConsoleTable::print()
 {
-	std::cout << std::endl << R"(                             __              __            
+	m_endTime = juce::Time::getCurrentTime();
+
+	std::cout << std::endl << R"(                             __              __
  ____  ___  _________  _____/ /_  ___  _____/ /_____  _____
 /_  / / _ \/ ___/ __ \/ ___/ __ \/ _ \/ ___/ //_/ _ \/ ___/
  / /_/  __/ /  / /_/ / /__/ / / /  __/ /__/ ,< /  __/ /    
@@ -207,6 +216,8 @@ void ConsoleTable::print()
     
     std::cout << m_table << std::endl;
 
+	printStats();
+
 	if (m_csvFile.has_value() && m_csvText.has_value() && m_csvFile->existsAsFile() && !m_csvText->isEmpty())
 	{
         m_csvFile->replaceWithText(*m_csvText);
@@ -214,6 +225,26 @@ void ConsoleTable::print()
 	}
 
     std::cout << "\n=========================================================================" << std::endl;
+}
+
+void ConsoleTable::printStats()
+{
+	m_stats.addRow({"Output Stats", "Value" });
+	m_stats.addRow({"Total number of files scanned", std::to_string(m_numItems).c_str() });
+	const auto duration{ m_endTime - m_startTime };
+	m_stats.addRow({"Total execution time", duration.getApproximateDescription().toRawUTF8() });
+
+	if (m_monoAnalysisMode)
+	{
+		m_stats.addRow({"Number of mono compatible files", std::to_string(m_numMonoFiles).c_str() });
+		m_stats.addRow({"Potential space savings by converting to mono", juce::File::descriptionOfSizeInBytes(m_sizeSavingsBytes).toRawUTF8() });
+	}
+	else
+	{
+		//TODO: Add unique stats for default zerochecker mode
+	}
+
+	std::cout << m_stats << std::endl;
 }
 
 void ConsoleTable::append(const std::initializer_list<const char*>& row, const juce::String& fullPath)
@@ -248,6 +279,9 @@ void ConsoleTable::append(const File& file)
 {
 	if (m_monoAnalysisMode)
 	{
+		m_numMonoFiles++;
+		m_sizeSavingsBytes += file.m_file.getSize() - (file.m_file.getSize() / file.m_numChannels);
+
 		auto monoCompatibility{ std::to_string(file.m_monoCompatibility) };
 		monoCompatibility.resize(6);
 		append({ file.m_file.getFileName().toStdString().c_str(), monoCompatibility.c_str()}, file.m_file.getFullPathName());

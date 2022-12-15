@@ -44,6 +44,7 @@ namespace zero
         explicit ConsoleTable(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0, bool monoAnalysis = false);
 
         void print();
+		void printStats();
         void append(const std::initializer_list<const char*>& row, const juce::String& fullPath = "");
         void append(const zero::File& file);
         void progressBar();
@@ -59,5 +60,12 @@ namespace zero
         int m_numItems{ 0 };
 
         bool m_monoAnalysisMode{ false };
+
+		samilton::ConsoleTable m_stats{};
+		int m_numMonoFiles{ 0 };
+		juce::int64 m_sizeSavingsBytes{ 0 };
+
+		juce::Time m_startTime{};
+		juce::Time m_endTime{};
     };
 }

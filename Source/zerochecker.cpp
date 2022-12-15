@@ -167,26 +167,26 @@ juce::String File::relTimeToString(const juce::RelativeTime& t)
 
 void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch)
 {
-	const auto numChannels{ static_cast<int>(reader->numChannels) };
-	const auto numSamples{ static_cast<int>((numSamplesToSearch > 0) ? numSamplesToSearch : reader->lengthInSamples) };
-	const auto compatibilityIncr{ 1.0f / static_cast<float>(numSamples) };
+	m_numChannels = static_cast<int>(reader->numChannels);
+	m_numSamples = static_cast<int>((numSamplesToSearch > 0) ? numSamplesToSearch : reader->lengthInSamples);
+	const auto compatibilityIncr{ 1.0f / static_cast<float>(m_numSamples) };
 
-	if (numChannels == 1)
+	if (m_numChannels == 1)
 	{
 		m_monoCompatibility = -1.0f;
 		return;
 	}
 	
-	juce::AudioSampleBuffer buffer{ numChannels, numSamples };
-	reader->read(&buffer, 0, numSamples, startSampleOffset, true, true);
+	juce::AudioSampleBuffer buffer{ m_numChannels, m_numSamples };
+	reader->read(&buffer, 0, m_numSamples, startSampleOffset, true, true);
 
 	std::vector<float> sampleBuffer;
-	for (auto sample{ 0 }; sample < numSamples; ++sample)
+	for (auto sample{ 0 }; sample < m_numSamples; ++sample)
 	{
 		sampleBuffer.clear();
-		sampleBuffer.reserve(numChannels);
+		sampleBuffer.reserve(m_numChannels);
 		
-		for (auto channel{ 0 }; channel < numChannels; ++channel)
+		for (auto channel{ 0 }; channel < m_numChannels; ++channel)
 		{
 			auto channelData{ buffer.getReadPointer(channel) };
 			sampleBuffer.emplace_back(channelData[sample]);

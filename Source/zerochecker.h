@@ -27,6 +27,8 @@ namespace zero
         juce::int64 m_lastNonZeroSample{};
         juce::RelativeTime m_lastNonZeroTime{};
 		float m_monoCompatibility{ 0.0f };
+		int m_numChannels{ 0 };
+		int m_numSamples{ 0 };
 
         void calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch, 
 			double magnitudeRangeMin, double magnitudeRangeMax, int minConsecutiveSamples);
