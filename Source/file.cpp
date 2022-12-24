@@ -17,13 +17,19 @@ namespace
 {
 	constexpr auto s_epsilon{ 0.0005f };
 
-	// Scan in reverse from end of file; modification of juce::AudioFormatReader::searchForLevel
-	juce::int64 reverseSearchForLevel(juce::AudioFormatReader* reader,
-	                                  juce::int64 endSampleOffset,
-	                                  juce::int64 numSamplesToSearch,
-	                                  double magnitudeRangeMinimum,
-	                                  double magnitudeRangeMaximum,
-	                                  int minimumConsecutiveSamples)
+	enum class SearchDirection
+	{
+		FORWARD, REVERSE
+	};
+
+	// Scan in either direction from start or end of file; modification of juce::AudioFormatReader::searchForLevel
+	juce::int64 searchForLevel(juce::AudioFormatReader* reader,
+	                           SearchDirection searchDirection,
+	                           juce::int64 startSampleOffset,
+	                           juce::int64 numSamplesToSearch,
+	                           double magnitudeRangeMinimum,
+	                           double magnitudeRangeMaximum,
+	                           int minimumConsecutiveSamples)
 	{
 		if (numSamplesToSearch == 0)
 		{
@@ -40,7 +46,7 @@ namespace
 		int consecutive = 0;
 		juce::int64 firstMatchPos = -1;
 
-		jassert(magnitudeRangeMaximum > magnitudeRangeMinimum);
+		jassert (magnitudeRangeMaximum > magnitudeRangeMinimum);
 
 		auto doubleMin = juce::jlimit(0.0, (double) std::numeric_limits<int>::max(),
 		                              magnitudeRangeMinimum * std::numeric_limits<int>::max());
@@ -49,12 +55,14 @@ namespace
 		auto intMagnitudeRangeMinimum = juce::roundToInt(doubleMin);
 		auto intMagnitudeRangeMaximum = juce::roundToInt(doubleMax);
 
-		juce::int64 startSample = reader->lengthInSamples - endSampleOffset;
+		juce::int64 startSample = (searchDirection == SearchDirection::FORWARD) ?
+		                          startSampleOffset : reader->lengthInSamples - startSampleOffset;
 
 		while (numSamplesToSearch != 0)
 		{
 			auto numThisTime = (int) juce::jmin(std::abs(numSamplesToSearch), (juce::int64) bufferSize);
-			juce::int64 bufferStart = startSample - bufferSize;
+			juce::int64 bufferStart = (searchDirection == SearchDirection::FORWARD) ?
+			                          startSample : startSample - bufferSize;
 
 			if (numSamplesToSearch < 0)
 			{
@@ -77,7 +85,8 @@ namespace
 				}
 
 				bool matches = false;
-				auto index = (int) (startSample - bufferStart - 1);
+				auto index = static_cast<int>((searchDirection == SearchDirection::FORWARD) ?
+				                              (startSample - bufferStart) : (startSample - bufferStart - 1));
 
 				if (reader->usesFloatingPointData)
 				{
@@ -128,7 +137,8 @@ namespace
 							return -1;
 						}
 
-						return reader->lengthInSamples - firstMatchPos;
+						return (searchDirection == SearchDirection::FORWARD) ?
+						       firstMatchPos : reader->lengthInSamples - firstMatchPos;
 					}
 				}
 				else
@@ -139,7 +149,7 @@ namespace
 
 				if (numSamplesToSearch > 0)
 				{
-					--startSample;
+					(searchDirection == SearchDirection::FORWARD) ? ++startSample : --startSample;
 				}
 			}
 
@@ -168,11 +178,11 @@ void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOff
 		numSamplesToSearch = reader->lengthInSamples;
 	}
 
-	m_firstNonZeroSample = reader->searchForLevel(startSampleOffset, numSamplesToSearch, magnitudeRangeMin,
-	                                              magnitudeRangeMax, minConsecutiveSamples);
+	m_firstNonZeroSample = searchForLevel(reader, SearchDirection::FORWARD, startSampleOffset, numSamplesToSearch,
+	                                      magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
 	m_firstNonZeroTime = juce::RelativeTime(static_cast<double>(m_firstNonZeroSample) / reader->sampleRate);
-	m_lastNonZeroSample = reverseSearchForLevel(reader, startSampleOffset, numSamplesToSearch, magnitudeRangeMin,
-	                                            magnitudeRangeMax, minConsecutiveSamples);
+	m_lastNonZeroSample = searchForLevel(reader, SearchDirection::REVERSE, startSampleOffset, numSamplesToSearch,
+	                                     magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
 	m_lastNonZeroTime = juce::RelativeTime(static_cast<double>(m_lastNonZeroSample) / reader->sampleRate);
 }
 
