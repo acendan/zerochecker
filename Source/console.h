@@ -18,27 +18,32 @@
 
 namespace zero
 {
-    class Console
-    {
-    public:
-        explicit Console(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0, bool monoAnalysis = false);
+	class Console
+	{
+	public:
+		explicit Console(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0,
+		                 bool monoAnalysis = false);
 
-        void print();
+		void print();
+
 		void printStats();
-        void append(const std::initializer_list<const char*>& row, const juce::String& fullPath = "");
-        void append(const zero::File& file);
-        void progressBar();
 
-    private:
-        samilton::ConsoleTable m_table{};
+		void append(const std::initializer_list<const char*>& row, const juce::String& fullPath = "");
 
-        std::optional<juce::File> m_csvFile{};
-        std::optional<juce::String> m_csvText{};
+		void append(const zero::File& file);
 
-        float m_progress{ 0.0f };
-        int m_progressBarWidth{ 70 };
-        int m_numItems{ 0 };
-        bool m_monoAnalysisMode{ false };
+		void progressBar();
+
+	private:
+		samilton::ConsoleTable m_table{};
+
+		std::optional<juce::File> m_csvFile{};
+		std::optional<juce::String> m_csvText{};
+
+		float m_progress{ 0.0f };
+		int m_progressBarWidth{ 70 };
+		int m_numItems{ 0 };
+		bool m_monoAnalysisMode{ false };
 
 		// Analysis stats
 		samilton::ConsoleTable m_stats{};
@@ -46,5 +51,5 @@ namespace zero
 		juce::int64 m_sizeSavingsBytes{ 0 };
 		juce::Time m_startTime{};
 		juce::Time m_endTime{};
-    };
+	};
 }

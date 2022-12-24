@@ -10,7 +10,7 @@
 
 #include "zerochecker.h"
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	zero::Checker zerochecker;
 	return zerochecker.run({ argc, argv });

@@ -40,7 +40,7 @@ Checker::Checker()
 					  else if (file.existsAsFile() &&
 					           file.hasFileExtension("wav;flac"))
 					  {
-						  m_files.val.emplace_back(zero::File(file));
+						  m_files.val.emplace_back(file);
 					  }
 				  }
 			  }});
@@ -179,7 +179,7 @@ int Checker::run(const juce::ArgumentList& args)
 void Checker::processFiles()
 {
 	Console console{ m_csv.val, static_cast<int>(m_files.val.size()),
-	                      m_analysisMode == AnalysisMode::MONO_COMPATIBILITY_CHECKER };
+	                 m_analysisMode == AnalysisMode::MONO_COMPATIBILITY_CHECKER };
 
 	std::mutex m;
 

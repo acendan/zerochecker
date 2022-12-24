@@ -26,7 +26,9 @@ namespace
 	                                  int minimumConsecutiveSamples)
 	{
 		if (numSamplesToSearch == 0)
+		{
 			return -1;
+		}
 
 		const int bufferSize = 4096;
 		juce::HeapBlock<int> tempSpace(bufferSize * 2 + 64);
@@ -40,8 +42,10 @@ namespace
 
 		jassert(magnitudeRangeMaximum > magnitudeRangeMinimum);
 
-		auto doubleMin = juce::jlimit(0.0, (double)std::numeric_limits<int>::max(), magnitudeRangeMinimum * std::numeric_limits<int>::max());
-		auto doubleMax = juce::jlimit(doubleMin, (double)std::numeric_limits<int>::max(), magnitudeRangeMaximum * std::numeric_limits<int>::max());
+		auto doubleMin = juce::jlimit(0.0, (double) std::numeric_limits<int>::max(),
+		                              magnitudeRangeMinimum * std::numeric_limits<int>::max());
+		auto doubleMax = juce::jlimit(doubleMin, (double) std::numeric_limits<int>::max(),
+		                              magnitudeRangeMaximum * std::numeric_limits<int>::max());
 		auto intMagnitudeRangeMinimum = juce::roundToInt(doubleMin);
 		auto intMagnitudeRangeMaximum = juce::roundToInt(doubleMax);
 
@@ -49,14 +53,18 @@ namespace
 
 		while (numSamplesToSearch != 0)
 		{
-			auto numThisTime = (int)juce::jmin(std::abs(numSamplesToSearch), (juce::int64)bufferSize);
+			auto numThisTime = (int) juce::jmin(std::abs(numSamplesToSearch), (juce::int64) bufferSize);
 			juce::int64 bufferStart = startSample - bufferSize;
 
 			if (numSamplesToSearch < 0)
+			{
 				bufferStart -= numThisTime;
+			}
 
 			if (bufferStart >= reader->lengthInSamples)
+			{
 				break;
+			}
 
 			reader->read(tempBuffer, 2, bufferStart, numThisTime, false);
 			auto num = numThisTime;
@@ -64,14 +72,16 @@ namespace
 			while (--num >= 0)
 			{
 				if (numSamplesToSearch < 0)
+				{
 					--startSample;
+				}
 
 				bool matches = false;
-				auto index = (int)(startSample - bufferStart - 1);
+				auto index = (int) (startSample - bufferStart - 1);
 
 				if (reader->usesFloatingPointData)
 				{
-					const float sample1 = std::abs(((float*)tempBuffer[0])[index]);
+					const float sample1 = std::abs(((float*) tempBuffer[0])[index]);
 
 					if (sample1 >= magnitudeRangeMinimum
 					    && sample1 <= magnitudeRangeMaximum)
@@ -80,7 +90,7 @@ namespace
 					}
 					else if (reader->numChannels > 1)
 					{
-						const float sample2 = std::abs(((float*)tempBuffer[1])[index]);
+						const float sample2 = std::abs(((float*) tempBuffer[1])[index]);
 
 						matches = (sample2 >= magnitudeRangeMinimum
 						           && sample2 <= magnitudeRangeMaximum);
@@ -107,12 +117,16 @@ namespace
 				if (matches)
 				{
 					if (firstMatchPos < 0)
+					{
 						firstMatchPos = startSample;
+					}
 
 					if (++consecutive >= minimumConsecutiveSamples)
 					{
 						if (firstMatchPos < 0 || firstMatchPos > reader->lengthInSamples)
+						{
 							return -1;
+						}
 
 						return reader->lengthInSamples - firstMatchPos;
 					}
@@ -124,13 +138,19 @@ namespace
 				}
 
 				if (numSamplesToSearch > 0)
+				{
 					--startSample;
+				}
 			}
 
 			if (numSamplesToSearch > 0)
+			{
 				numSamplesToSearch -= numThisTime;
+			}
 			else
+			{
 				numSamplesToSearch += numThisTime;
+			}
 		}
 
 		return -1;
@@ -138,7 +158,7 @@ namespace
 }
 
 //==============================================================================
-File::File(juce::File file) : m_file{ std::move(file) } {}
+File::File(juce::File file) : m_file{ std::move(file) } { }
 
 void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch,
                      double magnitudeRangeMin, double magnitudeRangeMax, int minConsecutiveSamples)
@@ -148,9 +168,11 @@ void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOff
 		numSamplesToSearch = reader->lengthInSamples;
 	}
 
-	m_firstNonZeroSample = reader->searchForLevel(startSampleOffset, numSamplesToSearch, magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
+	m_firstNonZeroSample = reader->searchForLevel(startSampleOffset, numSamplesToSearch, magnitudeRangeMin,
+	                                              magnitudeRangeMax, minConsecutiveSamples);
 	m_firstNonZeroTime = juce::RelativeTime(static_cast<double>(m_firstNonZeroSample) / reader->sampleRate);
-	m_lastNonZeroSample = reverseSearchForLevel(reader, startSampleOffset, numSamplesToSearch, magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
+	m_lastNonZeroSample = reverseSearchForLevel(reader, startSampleOffset, numSamplesToSearch, magnitudeRangeMin,
+	                                            magnitudeRangeMax, minConsecutiveSamples);
 	m_lastNonZeroTime = juce::RelativeTime(static_cast<double>(m_lastNonZeroSample) / reader->sampleRate);
 }
 
@@ -163,7 +185,8 @@ juce::String File::relTimeToString(const juce::RelativeTime& t)
 	return ((prd > -1) ? str.substring(0, prd + 4) : str);
 }
 
-void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch)
+void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juce::int64 startSampleOffset,
+                                            juce::int64 numSamplesToSearch)
 {
 	m_numChannels = static_cast<int>(reader->numChannels);
 	m_numSamples = static_cast<int>((numSamplesToSearch > 0) ? numSamplesToSearch : reader->lengthInSamples);
