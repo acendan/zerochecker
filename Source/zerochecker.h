@@ -11,42 +11,38 @@
 #pragma once
 
 #include "file.h"
+#include "command.h"
 
 #include <JuceHeader.h>
 #include <optional>
 
-namespace zero 
+namespace zero
 {
-    class Checker : public juce::ConsoleApplication
-    {
-    public:
-        Checker();
-	    int run(const juce::ArgumentList& args);
-        void processFiles();
+	class Checker : public juce::ConsoleApplication
+	{
+	public:
+		Checker();
 
-	    // Container for console command and its corresponding value
-	    template<typename T>
-	    struct CmdValue
-	    {
-			CmdValue() = default;
-			explicit CmdValue(T t) : val{ std::move(t) } {}
-		    auto operator<=>(const auto& that);
+		int run(const juce::ArgumentList& args);
 
-		    juce::ConsoleApplication::Command cmd{};
-		    T val{};
-	    };
+		void processFiles();
 
-		CmdValue<std::vector<File>> m_files{};
-		CmdValue<std::optional<juce::String>> m_csv{ std::nullopt };
-		CmdValue<juce::int64> m_sampleOffset{ 0 };
-		CmdValue<juce::int64> m_numSamplesToSearch{ -1 };
-		CmdValue<double> m_magnitudeRangeMin{ 0.003 };
-		CmdValue<double> m_magnitudeRangeMax{ 1.0 };
-		CmdValue<int> m_minConsecutiveSamples{ 0 };
-		CmdValue<bool> m_monoAnalysisMode{ false };
-		double m_monoAnalysisThreshold{ 0.99 };
+		enum class AnalysisMode
+		{
+			ZERO_CHECKER, MONO_COMPATIBILITY_CHECKER
+		};
+		AnalysisMode m_analysisMode{ AnalysisMode::ZERO_CHECKER };
 
-    private:
-        juce::AudioFormatManager m_formatMngr{};
-    };
+		zero::Command<std::vector<File>> m_files{};
+		zero::Command<std::optional<juce::String>> m_csv{ std::nullopt };
+		zero::Command<juce::int64> m_sampleOffset{ 0 };
+		zero::Command<juce::int64> m_numSamplesToSearch{ -1 };
+		zero::Command<double> m_magnitudeRangeMin{ 0.003 };
+		zero::Command<double> m_magnitudeRangeMax{ 1.0 };
+		zero::Command<int> m_minConsecutiveSamples{ 0 };
+		zero::Command<double> m_monoAnalysisThreshold{ 0.99 };
+
+	private:
+		juce::AudioFormatManager m_formatMngr{};
+	};
 }

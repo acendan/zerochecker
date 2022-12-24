@@ -4,6 +4,7 @@
     file.h
     Created: 23 Dec 2022 6:02:09pm
     Author:  Aaron Cendan
+    Description: Contains first and last non-zero data for a given audio file
 
   ==============================================================================
 */
@@ -14,8 +15,6 @@
 
 namespace zero
 {
-	//==============================================================================
-	// Contains first and last non-zero data for a given audio file
 	struct File
 	{
 		explicit File(juce::File file);

@@ -4,6 +4,7 @@
     console.cpp
     Created: 21 Aug 2022 4:59:19pm
     Author:  Aaron Cendan
+	Description: Generate console output table and write .csv file if applicable
 
   ==============================================================================
 */
@@ -20,8 +21,7 @@ namespace
 	constexpr auto s_fullPathHeader{ "Full Path" };
 }
 
-//==============================================================================
-ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullopt*/, int numItems, bool monoAnalysis) : 
+Console::Console(const std::optional<juce::String>& csv /*= std::nullopt*/, int numItems, bool monoAnalysis) :
 	m_numItems{ numItems }, m_monoAnalysisMode { monoAnalysis }
 {
     // Init table
@@ -66,7 +66,7 @@ ConsoleTable::ConsoleTable(const std::optional<juce::String>& csv /*= std::nullo
 	m_startTime = juce::Time::getCurrentTime();
 }
 
-void ConsoleTable::print()
+void Console::print()
 {
 	m_endTime = juce::Time::getCurrentTime();
 
@@ -90,7 +90,7 @@ void ConsoleTable::print()
     std::cout << "\n=========================================================================" << std::endl;
 }
 
-void ConsoleTable::printStats()
+void Console::printStats()
 {
 	m_stats.addRow({"Output Stats", "Value" });
 	m_stats.addRow({"Total number of files scanned", std::to_string(m_numItems).c_str() });
@@ -110,7 +110,7 @@ void ConsoleTable::printStats()
 	std::cout << m_stats << std::endl;
 }
 
-void ConsoleTable::append(const std::initializer_list<const char*>& row, const juce::String& fullPath)
+void Console::append(const std::initializer_list<const char*>& row, const juce::String& fullPath)
 {
 	m_table.addRow(row);
 
@@ -138,7 +138,7 @@ void ConsoleTable::append(const std::initializer_list<const char*>& row, const j
     }
 }
 
-void ConsoleTable::append(const File& file)
+void Console::append(const File& file)
 {
 	if (m_monoAnalysisMode)
 	{
@@ -160,7 +160,7 @@ void ConsoleTable::append(const File& file)
 	}
 }
 
-void ConsoleTable::progressBar()
+void Console::progressBar()
 {
 	static auto item{ 0 };
 	if (m_numItems > 0)

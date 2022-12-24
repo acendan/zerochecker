@@ -4,6 +4,7 @@
     console.h
     Created: 21 Aug 2022 4:59:27pm
     Author:  Aaron Cendan
+    Description: Generate console output table and write .csv file if applicable
 
   ==============================================================================
 */
@@ -17,12 +18,10 @@
 
 namespace zero
 {
-    //==============================================================================
-    // Generate console output table and write .csv file if applicable
-    class ConsoleTable
+    class Console
     {
     public:
-        explicit ConsoleTable(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0, bool monoAnalysis = false);
+        explicit Console(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0, bool monoAnalysis = false);
 
         void print();
 		void printStats();

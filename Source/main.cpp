@@ -10,11 +10,8 @@
 
 #include "zerochecker.h"
 
-//==============================================================================
 int main (int argc, char* argv[])
 {
-	// #TODO: Thoroughly document all methods and functions
-
 	zero::Checker zerochecker;
 	return zerochecker.run({ argc, argv });
 }

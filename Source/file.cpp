@@ -4,6 +4,7 @@
     file.cpp
     Created: 23 Dec 2022 6:02:19pm
     Author:  Aaron Cendan
+    Description: Contains first and last non-zero data for a given audio file
 
   ==============================================================================
 */

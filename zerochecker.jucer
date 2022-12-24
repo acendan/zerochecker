@@ -7,12 +7,14 @@
               companyEmail="aaron.cendan@gmail.com">
   <MAINGROUP id="mNXs8E" name="zerochecker">
     <GROUP id="{AD834137-EC2D-BB9B-88D7-DAB72A900D2F}" name="Source">
+      <FILE id="hNhBa9" name="command.cpp" compile="1" resource="0" file="Source/command.cpp"/>
       <FILE id="Nd9Ext" name="console.cpp" compile="1" resource="0" file="Source/console.cpp"/>
       <FILE id="qMJJe6" name="file.cpp" compile="1" resource="0" file="Source/file.cpp"/>
       <FILE id="VYslb5" name="main.cpp" compile="1" resource="0" file="Source/main.cpp"/>
       <FILE id="reIBrc" name="zerochecker.cpp" compile="1" resource="0" file="Source/zerochecker.cpp"/>
     </GROUP>
     <GROUP id="{F7148480-63BE-7034-38AA-6EBD3DDC419B}" name="Header">
+      <FILE id="bijOX6" name="command.h" compile="0" resource="0" file="Source/command.h"/>
       <FILE id="FdqFsh" name="console.h" compile="0" resource="0" file="Source/console.h"/>
       <FILE id="YUknv2" name="file.h" compile="0" resource="0" file="Source/file.h"/>
       <FILE id="KYzerg" name="zerochecker.h" compile="0" resource="0" file="Source/zerochecker.h"/>
