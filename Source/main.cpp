@@ -8,13 +8,13 @@
   ==============================================================================
 */
 
-#include "console.h"
+#include "zerochecker.h"
 
 //==============================================================================
 int main (int argc, char* argv[])
 {
 	// #TODO: Thoroughly document all methods and functions
 
-	zero::Command cmd;
-	return cmd.run({ argc, argv });
+	zero::Checker zerochecker;
+	return zerochecker.run({ argc, argv });
 }

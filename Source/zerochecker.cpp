@@ -10,212 +10,178 @@
 
 #include "zerochecker.h"
 #include "console.h"
-#include <utility>
+
 #include <execution>
 
 using namespace zero;
-
-namespace
-{
-	constexpr auto s_epsilon{ 0.0005f };
-	
-	// Scan in reverse from end of file; modification of juce::AudioFormatReader::searchForLevel
-	juce::int64 reverseSearchForLevel(juce::AudioFormatReader* reader, 
-		juce::int64 endSampleOffset,
-		juce::int64 numSamplesToSearch,
-		double magnitudeRangeMinimum,
-		double magnitudeRangeMaximum,
-		int minimumConsecutiveSamples)
-	{
-		if (numSamplesToSearch == 0)
-			return -1;
-
-		const int bufferSize = 4096;
-		juce::HeapBlock<int> tempSpace(bufferSize * 2 + 64);
-
-		int* tempBuffer[3] = { tempSpace.get(),
-							   tempSpace.get() + bufferSize,
-							   nullptr };
-
-		int consecutive = 0;
-		juce::int64 firstMatchPos = -1;
-
-		jassert(magnitudeRangeMaximum > magnitudeRangeMinimum);
-
-		auto doubleMin = juce::jlimit(0.0, (double)std::numeric_limits<int>::max(), magnitudeRangeMinimum * std::numeric_limits<int>::max());
-		auto doubleMax = juce::jlimit(doubleMin, (double)std::numeric_limits<int>::max(), magnitudeRangeMaximum * std::numeric_limits<int>::max());
-		auto intMagnitudeRangeMinimum = juce::roundToInt(doubleMin);
-		auto intMagnitudeRangeMaximum = juce::roundToInt(doubleMax);
-		
-		juce::int64 startSample = reader->lengthInSamples - endSampleOffset;
-
-		while (numSamplesToSearch != 0)
-		{
-			auto numThisTime = (int)juce::jmin(std::abs(numSamplesToSearch), (juce::int64)bufferSize);
-			juce::int64 bufferStart = startSample - bufferSize;
-
-			if (numSamplesToSearch < 0)
-				bufferStart -= numThisTime;
-
-			if (bufferStart >= reader->lengthInSamples)
-				break;
-
-			reader->read(tempBuffer, 2, bufferStart, numThisTime, false);
-			auto num = numThisTime;
-
-			while (--num >= 0)
-			{
-				if (numSamplesToSearch < 0)
-					--startSample;
-
-				bool matches = false;
-				auto index = (int)(startSample - bufferStart - 1);
-
-				if (reader->usesFloatingPointData)
-				{
-					const float sample1 = std::abs(((float*)tempBuffer[0])[index]);
-
-					if (sample1 >= magnitudeRangeMinimum
-						&& sample1 <= magnitudeRangeMaximum)
-					{
-						matches = true;
-					}
-					else if (reader->numChannels > 1)
-					{
-						const float sample2 = std::abs(((float*)tempBuffer[1])[index]);
-
-						matches = (sample2 >= magnitudeRangeMinimum
-							&& sample2 <= magnitudeRangeMaximum);
-					}
-				}
-				else
-				{
-					const int sample1 = std::abs(tempBuffer[0][index]);
-
-					if (sample1 >= intMagnitudeRangeMinimum
-						&& sample1 <= intMagnitudeRangeMaximum)
-					{
-						matches = true;
-					}
-					else if (reader->numChannels > 1)
-					{
-						const int sample2 = std::abs(tempBuffer[1][index]);
-
-						matches = (sample2 >= intMagnitudeRangeMinimum
-							&& sample2 <= intMagnitudeRangeMaximum);
-					}
-				}
-
-				if (matches)
-				{
-					if (firstMatchPos < 0)
-						firstMatchPos = startSample;
-
-					if (++consecutive >= minimumConsecutiveSamples)
-					{
-						if (firstMatchPos < 0 || firstMatchPos > reader->lengthInSamples)
-							return -1;
-
-						return reader->lengthInSamples - firstMatchPos;
-					}
-				}
-				else
-				{
-					consecutive = 0;
-					firstMatchPos = -1;
-				}
-
-				if (numSamplesToSearch > 0)
-					--startSample;
-			}
-
-			if (numSamplesToSearch > 0)
-				numSamplesToSearch -= numThisTime;
-			else
-				numSamplesToSearch += numThisTime;
-		}
-
-		return -1;
-	}
-}
-
-//==============================================================================
-File::File(juce::File file) : m_file{ std::move(file) } {}
-
-void File::calculate(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch,
-	double magnitudeRangeMin, double magnitudeRangeMax, int minConsecutiveSamples)
-{
-	if (numSamplesToSearch == -1)
-	{
-		numSamplesToSearch = reader->lengthInSamples;
-	}
-
-	m_firstNonZeroSample = reader->searchForLevel(startSampleOffset, numSamplesToSearch, magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
-	m_firstNonZeroTime = juce::RelativeTime(static_cast<double>(m_firstNonZeroSample) / reader->sampleRate);
-	m_lastNonZeroSample = reverseSearchForLevel(reader, startSampleOffset, numSamplesToSearch, magnitudeRangeMin, magnitudeRangeMax, minConsecutiveSamples);
-	m_lastNonZeroTime = juce::RelativeTime(static_cast<double>(m_lastNonZeroSample) / reader->sampleRate);
-}
-
-juce::String File::relTimeToString(const juce::RelativeTime& t)
-{
-	auto str{ juce::String(t.inSeconds()) };
-	auto prd{ str.indexOfChar('.') };
-
-	// #TODO: Expose number of places after decimal
-	return ((prd > -1) ? str.substring(0, prd + 4) : str);
-}
-
-void zero::File::calculateMonoCompatibility(juce::AudioFormatReader* reader, juce::int64 startSampleOffset, juce::int64 numSamplesToSearch)
-{
-	m_numChannels = static_cast<int>(reader->numChannels);
-	m_numSamples = static_cast<int>((numSamplesToSearch > 0) ? numSamplesToSearch : reader->lengthInSamples);
-	const auto compatibilityIncr{ 1.0f / static_cast<float>(m_numSamples) };
-
-	if (m_numChannels == 1)
-	{
-		m_monoCompatibility = -1.0f;
-		return;
-	}
-	
-	juce::AudioSampleBuffer buffer{ m_numChannels, m_numSamples };
-	reader->read(&buffer, 0, m_numSamples, startSampleOffset, true, true);
-
-	std::vector<float> sampleBuffer;
-	for (auto sample{ 0 }; sample < m_numSamples; ++sample)
-	{
-		sampleBuffer.clear();
-		sampleBuffer.reserve(m_numChannels);
-		
-		for (auto channel{ 0 }; channel < m_numChannels; ++channel)
-		{
-			auto channelData{ buffer.getReadPointer(channel) };
-			sampleBuffer.emplace_back(channelData[sample]);
-		}
-
-		// Check if all channels are equal to the first element
-		auto equalsFirstSample = [&sampleBuffer](float f) 
-		{ 
-			return std::abs(f - sampleBuffer[0]) < s_epsilon; 
-		};
-		
-		if (std::all_of(sampleBuffer.begin() + 1, sampleBuffer.end(), equalsFirstSample))
-		{
-			m_monoCompatibility += compatibilityIncr;
-		}
-	}
-
-	m_monoCompatibility = std::min(m_monoCompatibility, 1.0f);
-}
 
 //==============================================================================
 Checker::Checker()
 {
 	m_formatMngr.registerBasicFormats();
+
+	// Parse input files
+	m_files.cmd = juce::ConsoleApplication::Command(
+			{"", "<files> <folders>", "Files and/or folders to analyze",
+			 "Recursively analyzes all .wav and .flac files in folders.",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 for (const auto &arg: args.arguments)
+				 {
+					 juce::File file{arg.resolveAsFile()};
+					 if (file.isDirectory())
+					 {
+						 for (const auto &child: file.findChildFiles(
+								 juce::File::TypesOfFileToFind::findFiles, true,
+								 "*.wav;*.flac"))
+						 {
+							 m_files.val.emplace_back(child);
+						 }
+					 }
+					 else if (file.existsAsFile() &&
+					          file.hasFileExtension("wav;flac"))
+					 {
+						 m_files.val.emplace_back(zero::File(file));
+					 }
+				 }
+			 }});
+	addCommand(m_files.cmd);
+
+	// Parse optional csv
+	m_csv.cmd = juce::ConsoleApplication::Command(
+			{"-c|--csv", "-c|--csv <output.csv>", "Specify output .csv filepath",
+			 "Generates CSV file from zerochecker output.",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_csv.val = args.getValueForOption("-c|--csv");
+			 }});
+	addCommand(m_csv.cmd);
+
+	// Mono analysis mode
+	m_monoAnalysisMode.cmd = juce::ConsoleApplication::Command(
+			{"-m|--mono", "-m|--mono <0.9>",
+			 "Mono folddown compatibility checker. Set threshold (0.0 - 1.0) for output, where 1.0 is identical across all channels.",
+			 "Overrides zerochecking to scan channels for mono folddown compatibility.",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_monoAnalysisThreshold = std::clamp(
+						 args.getValueForOption(
+								 "-m|--mono").getDoubleValue(), 0.0,
+						 1.0);
+				 m_monoAnalysisMode.val = true;
+			 }});
+	addCommand(m_monoAnalysisMode.cmd);
+
+	// Sample offset from start or end
+	m_sampleOffset.cmd = juce::ConsoleApplication::Command(
+			{"-o|--offset", "-o|--offset <0>", "Number of samples offset from start/end",
+			 "Relative offset from start and end of file before analysis of level.",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_sampleOffset.val = args.getValueForOption("-o|--offset").getIntValue();
+			 }});
+	addCommand(m_sampleOffset.cmd);
+
+	// Number of samples to search
+	m_numSamplesToSearch.cmd = juce::ConsoleApplication::Command(
+			{"-n|--num", "-n|--num <-1>", "Number of samples to analyze before stopping (-1 = entire file)",
+			 "Restricts the number of samples analyzed before stopping.",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_numSamplesToSearch.val = args.getValueForOption("-n|--num").getIntValue();
+			 }});
+	addCommand(m_numSamplesToSearch.cmd);
+
+	// Mininimum consecutive samples
+	m_minConsecutiveSamples.cmd = juce::ConsoleApplication::Command(
+			{"-s|--consec", "-s|--consec <0>",
+			 "Number of consecutive samples past threshold to be considered a non-zero",
+			 "If this is greater than 0, then multiple consecutive samples must exceed threshold for detecting non-zeros.",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_minConsecutiveSamples.val = args.getValueForOption(
+						 "-s|--consec").getIntValue();
+			 }});
+	addCommand(m_minConsecutiveSamples.cmd);
+
+	// Magnitude range maximum
+	m_magnitudeRangeMax.cmd = juce::ConsoleApplication::Command(
+			{"-x|--max", "-x|--max <1.0>", "Maximum amplitude considered for non-zeros (0.0 - 1.0)",
+			 "If a sample is less than this value, it will be considered a non-zero. Must be greater than minimum (-y|--min).",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_magnitudeRangeMax.val = std::clamp(args.getValueForOption("-x|--max").getDoubleValue(), 0.0, 1.0);
+			 }});
+	addCommand(m_magnitudeRangeMax.cmd);
+
+	// Magnitude range minimum
+	m_magnitudeRangeMin.cmd = juce::ConsoleApplication::Command(
+			{"-y|--min", "-y|--min <0.003>", "Minimum amplitude considered for non-zeros (0.0 - 1.0)",
+			 "If a sample is greater than this value, it will be considered a non-zero. Must be less than maximum (-x|--max)",
+			 [this](const juce::ArgumentList &args)
+			 {
+				 m_magnitudeRangeMin.val = std::clamp(args.getValueForOption("-y|--min").getDoubleValue(), 0.0, 1.0);
+			 }});
+	addCommand(m_magnitudeRangeMin.cmd);
+
+	// Help & version
+	addHelpCommand("-h|--help", juce::String("ABOUT:\n    zerochecker v") + ProjectInfo::versionString +
+	                            R"( - https://github.com/acendan/zerochecker
+    Aaron Cendan 2022 - https://aaroncendan.me | https://ko-fi.com/acendan_
+
+USAGE:
+    .\zerochecker.exe [options] <files> <folders>
+    .\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
+    .\zerochecker.exe 'C:\folder\subfolder\'
+    .\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\cool_file.wav'
+    .\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
+
+NOTE:
+    Short options like '-x' should have a space, followed by the desired value.
+    Long options like '--max' should have an equals sign instead. Refer to USAGE above.
+
+OPTIONS:)", true);
+	addVersionCommand("-v|--version", ProjectInfo::versionString);
+}
+
+int Checker::run(const juce::ArgumentList &args)
+{
+	// Run help command by default
+	if (args.size() == 0)
+	{
+		return findAndRunCommand(args);
+	}
+
+	// Parse args
+	juce::StringArray filelist{};
+	for (const auto &arg: args.arguments)
+	{
+		if (arg.isOption())
+		{
+			findAndRunCommand(juce::ArgumentList(args.executableName,
+			                                     juce::StringArray(arg.text, args.getValueForOption(arg.text))));
+		}
+		else if (!arg.isOption() && !arg.text.containsIgnoreCase("csv"))
+		{
+			filelist.addIfNotAlreadyThere(arg.text);
+		}
+	}
+
+	// Fetch input files
+	m_files.cmd.command(juce::ArgumentList(args.executableName, filelist));
+
+	// Run zerochecker
+	if (!m_files.val.empty())
+	{
+		processFiles();
+	}
+
+	return 0;
 }
 
 void Checker::processFiles()
 {
-	ConsoleTable console{ m_csv, static_cast<int>(m_files.size()), m_monoAnalysisMode };
+	ConsoleTable console{m_csv.val, static_cast<int>(m_files.val.size()), m_monoAnalysisMode.val};
 
 	std::mutex m;
 
@@ -225,33 +191,36 @@ void Checker::processFiles()
 		console.progressBar();
 	};
 
-	auto appendZeroFile = [&m, &console](const File& zeroFile)
+	auto appendZeroFile = [&m, &console](const File &zeroFile)
 	{
 		std::lock_guard<std::mutex> guard(m);
 		console.append(zeroFile);
 	};
 
-	auto monoAnalyze = [&](File& zeroFile)
+	auto monoAnalyze = [&](File &zeroFile)
 	{
 		updateProgress();
-		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
+		if (auto *reader = m_formatMngr.createReaderFor(zeroFile.m_file))
 		{
-			zeroFile.calculateMonoCompatibility(reader, m_sampleOffset, m_numSamplesToSearch);
+			zeroFile.calculateMonoCompatibility(reader, m_sampleOffset.val, m_numSamplesToSearch.val);
 
 			// Only append files above threshold
 			if (zeroFile.m_monoCompatibility > m_monoAnalysisThreshold)
 			{
 				appendZeroFile(zeroFile);
 			}
+
+			delete reader;
 		}
 	};
 
-	auto zeroCheck = [&](File& zeroFile)
+	auto zeroCheck = [&](File &zeroFile)
 	{
 		updateProgress();
-		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
+		if (auto *reader = m_formatMngr.createReaderFor(zeroFile.m_file))
 		{
-			zeroFile.calculate(reader, m_sampleOffset, m_numSamplesToSearch, m_magnitudeRangeMin, m_magnitudeRangeMax, m_minConsecutiveSamples);
+			zeroFile.calculate(reader, m_sampleOffset.val, m_numSamplesToSearch.val, m_magnitudeRangeMin.val,
+			                   m_magnitudeRangeMax.val, m_minConsecutiveSamples.val);
 			appendZeroFile(zeroFile);
 
 			delete reader;
@@ -259,14 +228,20 @@ void Checker::processFiles()
 	};
 
 	// Execute in parallel
-	if (m_monoAnalysisMode)
+	if (m_monoAnalysisMode.val)
 	{
-		std::for_each(std::execution::par_unseq, m_files.begin(), m_files.end(), monoAnalyze);
+		std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), monoAnalyze);
 	}
 	else
 	{
-		std::for_each(std::execution::par_unseq, m_files.begin(), m_files.end(), zeroCheck);
+		std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), zeroCheck);
 	}
 
 	console.print();
+}
+
+template<typename T>
+auto Checker::CmdValue<T>::operator<=>(const auto &that)
+{
+	return this->val <=> that.val;
 }
