@@ -36,12 +36,16 @@ namespace
 			return -1;
 		}
 
+		const int numChannels{ static_cast<int>(reader->numChannels) };
 		const int bufferSize = 4096;
-		juce::HeapBlock<int> tempSpace(bufferSize * 2 + 64);
+		juce::HeapBlock<int> tempSpace(bufferSize * numChannels + 64);
 
-		int* tempBuffer[3] = { tempSpace.get(),
-		                       tempSpace.get() + bufferSize,
-		                       nullptr };
+		int* tempBuffer[numChannels + 1];
+		for (int ch{ 0 }; ch < numChannels; ch++)
+		{
+			tempBuffer[ch] = tempSpace.get() + (bufferSize * ch);
+		}
+		tempBuffer[numChannels] = nullptr;
 
 		int consecutive = 0;
 		juce::int64 firstMatchPos = -1;
@@ -74,7 +78,7 @@ namespace
 				break;
 			}
 
-			reader->read(tempBuffer, 2, bufferStart, numThisTime, false);
+			reader->read(tempBuffer, numChannels, bufferStart, numThisTime, false);
 			auto num = numThisTime;
 
 			while (--num >= 0)
@@ -88,38 +92,29 @@ namespace
 				auto index = static_cast<int>((searchDirection == SearchDirection::FORWARD) ?
 				                              (startSample - bufferStart) : (startSample - bufferStart - 1));
 
+				// TODO: Return the channel where matches = true, if applicable. Display in console output...
 				if (reader->usesFloatingPointData)
 				{
-					const float sample1 = std::abs(((float*) tempBuffer[0])[index]);
-
-					if (sample1 >= magnitudeRangeMinimum
-					    && sample1 <= magnitudeRangeMaximum)
+					for (int ch{ 0 }; ch < numChannels; ch++)
 					{
-						matches = true;
-					}
-					else if (reader->numChannels > 1)
-					{
-						const float sample2 = std::abs(((float*) tempBuffer[1])[index]);
-
-						matches = (sample2 >= magnitudeRangeMinimum
-						           && sample2 <= magnitudeRangeMaximum);
+						const float smpl = std::abs(((float*) tempBuffer[ch])[index]);
+						if (smpl >= magnitudeRangeMinimum && smpl <= magnitudeRangeMaximum)
+						{
+							matches = true;
+							break;
+						}
 					}
 				}
 				else
 				{
-					const int sample1 = std::abs(tempBuffer[0][index]);
-
-					if (sample1 >= intMagnitudeRangeMinimum
-					    && sample1 <= intMagnitudeRangeMaximum)
+					for (int ch{ 0 }; ch < numChannels; ch++)
 					{
-						matches = true;
-					}
-					else if (reader->numChannels > 1)
-					{
-						const int sample2 = std::abs(tempBuffer[1][index]);
-
-						matches = (sample2 >= intMagnitudeRangeMinimum
-						           && sample2 <= intMagnitudeRangeMaximum);
+						const int smpl = std::abs(tempBuffer[ch][index]);
+						if (smpl >= magnitudeRangeMinimum && smpl <= magnitudeRangeMaximum)
+						{
+							matches = true;
+							break;
+						}
 					}
 				}
 
