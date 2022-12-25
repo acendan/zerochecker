@@ -5,7 +5,7 @@ A command line utility for analyzing audio files. **zerochecker** currently feat
 > _...a command line utility for locating the first and last non-zero samples in audio files._
 
 2. [mono compatibility checker](https://github.com/acendan/zerochecker/wiki/2.-mono-compatibility-checker)
-> _...allows you to scan multichannel files for mono folddown compatibility._
+> _...allows you to scan multichannel files for mono folddown compatibility, determining whether all channels contain the same content._
 
 Please refer to their respective pages in [the wiki](https://github.com/acendan/zerochecker/wiki) for a thorough breakdown of what they are, 
 why you might want to use them, and of course, how to utilize the information they provide in a practical manner.
