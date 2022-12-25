@@ -41,10 +41,13 @@ Long options like '--min' should have an equals sign instead. Refer to **Usage**
 ```posh
 -h|--help               # Prints the list of commands
 -v|--version            # Prints the current version number
--m|--mono <0.9>         # Mono folddown compatibility checker w/ similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
--c|--csv <output.csv>   # Specify output .csv filepath
+
+# Analysis Modes
+# zerochecker default mode, no optional arguments required.
+-m|--mono <0.9>         # Mono compatibility checker. Similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
 
 # Relevant in ALL analysis modes (zerochecker & mono compatibiliity checker)
+-c|--csv <output.csv>   # Output results to specified .csv filepath
 -o|--offset <0>         # Number of samples offset from start/end
 -n|--num <-1>           # Number of samples to analyze before stopping (-1 = entire file)
 
