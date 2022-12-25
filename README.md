@@ -18,19 +18,28 @@ Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffe
 In the examples below, it is assumed that `.\zerochecker.exe` refers to the relative directory where you downloaded **zerochecker**.
 You will need to reference the fully qualified or relative path accordingly, i.e. `C:\Users\Aaron\Tools\zerochecker.exe`
 
-    .\zerochecker.exe [options] <files> <folders>
-    
-    .\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
-    .\zerochecker.exe 'C:\folder\subfolder\'
-    .\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\cool_file.wav'
-    .\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
+```posh
+.\zerochecker.exe [options] <files> <folders>
+
+# Run zerochecker with default analysis mode (no optional parameters). Scan two different files.
+.\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
+
+# Run with mono compatibility checker mode. Scans all audio files in subfolder (recursively).
+.\zerochecker.exe -m 'C:\folder\subfolder\'
+
+# Run with default analysis mode, outputting results to a .csv file. Scan one file.
+.\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\cool_file.wav'
+
+# Run with default analysis mode and various optional parameters set.
+.\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
+```
 
 ## Options
     -h|--help        Prints the list of commands
     -v|--version     Prints the current version number
 
     -c|--csv <output.csv>   Specify output .csv filepath
-    -m|--mono <0.9>         Mono folddown compatibility checker. Set threshold (0.0 - 1.0) for output, where 1.0 is identical across all channels.
+    -m|--mono <0.9>         Mono folddown compatibility checker. Set similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
     -o|--offset <0>         Number of samples offset from start/end
     -n|--num <-1>           Number of samples to analyze before stopping (-1 = entire file)
     -s|--consec <0>         Number of consecutive samples past threshold to be considered a non-zero
