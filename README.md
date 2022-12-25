@@ -51,7 +51,7 @@ Long options like '--min' should have an equals sign instead. Refer to **Usage**
 ```
 
 ## WIP
-- Accept .csv file or text file with filepaths as input
+- Accept text file with filepaths as input
 - Generate Reaper batch converter script 
 - Complete the wiki... (better explanation of using via command line)
 - Open command line if run via double click in Explorer??
