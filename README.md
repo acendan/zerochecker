@@ -15,9 +15,8 @@ Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffe
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
 ## Usage
-In the examples below, it is assumed that '.\' refers to the relative directory where you downloaded
-zerochecker.exe. If you're using the command line from another location, you'll need to reference
-the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zerochecker.exe'
+In the examples below, it is assumed that `.\zerochecker.exe` refers to the relative directory where you downloaded **zerochecker**.
+You will need to reference the fully qualified or relative path accordingly, i.e. `C:\Users\Aaron\Tools\zerochecker.exe`
 
     .\zerochecker.exe [options] <files> <folders>
     
