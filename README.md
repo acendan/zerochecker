@@ -1,13 +1,20 @@
 # zerochecker
-A command line utility for a analyzing audio files. **zerochecker** currently features two different analysis modes, so refer to 
-their respective pages in [the wiki](https://github.com/acendan/zerochecker/wiki) for a thorough breakdown of what they are, why you might want
-to use them, and of course, how to utilize the information they provide in a practical manner.
+A command line utility for analyzing audio files. **zerochecker** currently features two different analysis modes:
+
+1. [zerochecker](https://github.com/acendan/zerochecker/wiki/1.-zerochecker)
+> _...a command line utility for locating the first and last non-zero samples in audio files._
+
+2. [mono compatibility checker](https://github.com/acendan/zerochecker/wiki/2.-mono-compatibility-checker)
+> _...allows you to determine whether your quad files are really just four mono files standing on eachothers' shoulders in a trench coat._
+
+Please refer to their respective pages in [the wiki](https://github.com/acendan/zerochecker/wiki) for a thorough breakdown of what they are, 
+why you might want to use them, and of course, how to utilize the information they provide in a practical manner.
 
 Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
 
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
-## Usage
+## General Usage
 In the examples below, it is assumed that '.\' refers to the relative directory where you downloaded
 zerochecker.exe. If you're using the command line from another location, you'll need to reference
 the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zerochecker.exe'
@@ -35,33 +42,13 @@ the fully qualified or relative path accordingly, i.e. 'C:\Users\Aaron\Tools\zer
 - Short options like '-m' should have a space, followed by the desired value.
 - Long options like '--min' should have an equals sign instead. Refer to USAGE above.
     
-
-## Mono Folddown Compatibility Checker (-m|--mono)
-This mode allows you to scan multi-channel audio files for mono compatibility. In other words, it checks to see if all of the channels in that file contain the exact same information. Requires zerochecker v0.0.2+.
- 
-### Why does that matter?
-Most importantly, it means that you can easily batch process those multichannel files to just be mono. This saves a significant chunk of memory (~half the size for a stereo file, ~quarter of the size for quad, you get the point). In the case of game development, it also means you could be saving a bit of CPU overhead on decoding and processing multichannel assets. This can also help improve those assets' in-game spatialization, which often relies on time-based delays between channels and can inadvertently create a subtle Haas effect if multichannel assets contain the same content in each channel.
- 
-### What does the Mono Compatibility output mean?
-The compatibility factor in the output log is a scale of 0.0 - 1.0, where 1.0 means there is a perfect sample-accurate match between channels. If you want to just process files that are exactly the same (1.0), then you can go ahead and do that; though I encourage you to take a look at some of the 0.90-0.95 matches, you can probably convert those to mono too.
- 
-Once you've got a list of files that you want to fold to mono, you can sprinkle some scripting magic to check them all out in your version control platform of choice and overwrite them as mono. Reaper's batch processor is great for overwriting assets as mono. 
-
-![image](https://user-images.githubusercontent.com/65690085/191663408-f142029a-96f6-4eec-a2cd-ba5787cbe071.png)
-    
-
 ## WIP
 - Accept .csv file or text file with filepaths as input
-- Provide stats (number of files hit/not hit, total size potentially saved by conversion to mono, etc)
 - Generate Reaper batch converter script 
 - Complete the wiki... (better explanation of using via command line)
 - Open command line if run via double click in Explorer??
 - The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
-- Sorting options for table columns would be great
-- Currently, zerochecker only analyzes up to the first two channels of input files. 
-  Need to look into adding support for multichannel analysis.
-- Potentially rewrite zerochecking algorithm using buffer.getMagnitude
 - While clicks and pops in looping files are somewhat determined by the offset in timing 
   and amplitude between first and last samples, quantifying the 'clickiness' could include some
   pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
