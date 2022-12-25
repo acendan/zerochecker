@@ -46,12 +46,12 @@ Long options like '--min' should have an equals sign instead. Refer to **Usage**
 # zerochecker default mode, no optional arguments required.
 -m|--mono <0.9>         # Mono compatibility checker. Similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
 
-# Relevant in ALL analysis modes (zerochecker & mono compatibiliity checker)
+# Options available in ALL analysis modes (zerochecker & mono compatibiliity checker)
 -c|--csv <output.csv>   # Output results to specified .csv filepath
 -o|--offset <0>         # Number of samples offset from start/end
 -n|--num <-1>           # Number of samples to analyze before stopping (-1 = entire file)
 
-# Relevant ONLY in zerochecker
+# Options ONLY in zerochecker/default analysis mode
 -s|--consec <0>         # Number of consecutive samples past threshold to be considered a non-zero
 -x|--max <1.0>          # Maximum amplitude considered for non-zeros (0.0 - 1.0)
 -y|--min <0.003>        # Minimum amplitude considered for non-zeros (0.0 - 1.0)
