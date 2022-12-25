@@ -35,21 +35,21 @@ You will need to reference the fully qualified or relative path accordingly, i.e
 ```
 
 ## Options
-    -h|--help        Prints the list of commands
-    -v|--version     Prints the current version number
+Short options like '-m' should have a space, followed by the desired value.
+Long options like '--min' should have an equals sign instead. Refer to **Usage** above for examples.
 
-    -c|--csv <output.csv>   Specify output .csv filepath
-    -m|--mono <0.9>         Mono folddown compatibility checker. Set similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
-    -o|--offset <0>         Number of samples offset from start/end
-    -n|--num <-1>           Number of samples to analyze before stopping (-1 = entire file)
-    -s|--consec <0>         Number of consecutive samples past threshold to be considered a non-zero
-    -x|--max <1.0>          Maximum amplitude considered for non-zeros (0.0 - 1.0)
-    -y|--min <0.003>        Minimum amplitude considered for non-zeros (0.0 - 1.0)
-    
-## Note
-- Short options like '-m' should have a space, followed by the desired value.
-- Long options like '--min' should have an equals sign instead. Refer to **Usage** above for examples.
-    
+```posh
+-h|--help               # Prints the list of commands
+-v|--version            # Prints the current version number
+-m|--mono <0.9>         # Mono folddown compatibility checker w/ similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
+-c|--csv <output.csv>   # Specify output .csv filepath
+-o|--offset <0>         # Number of samples offset from start/end
+-n|--num <-1>           # Number of samples to analyze before stopping (-1 = entire file)
+-s|--consec <0>         # Number of consecutive samples past threshold to be considered a non-zero
+-x|--max <1.0>          # Maximum amplitude considered for non-zeros (0.0 - 1.0)
+-y|--min <0.003>        # Minimum amplitude considered for non-zeros (0.0 - 1.0)
+```
+
 ## WIP
 - Accept .csv file or text file with filepaths as input
 - Generate Reaper batch converter script 
