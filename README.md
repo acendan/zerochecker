@@ -1,7 +1,7 @@
 # zerochecker
-A command line utility for locating the first and last non-zero samples in audio files.
-This is particularly useful for checking to see if a file begins or ends at a zero-crossing,
-which can cause clicks and pops when starting playback or at the bounds of loops. 
+A command line utility for a analyzing audio files. **zerochecker** currently features two different analysis modes, so refer to 
+their respective pages in [the wiki](https://github.com/acendan/zerochecker/wiki) for a thorough breakdown of what they are, why you might want
+to use them, and of course, how to utilize the information they provide in a practical manner.
 
 Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
 
