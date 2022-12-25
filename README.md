@@ -43,8 +43,12 @@ Long options like '--min' should have an equals sign instead. Refer to **Usage**
 -v|--version            # Prints the current version number
 -m|--mono <0.9>         # Mono folddown compatibility checker w/ similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
 -c|--csv <output.csv>   # Specify output .csv filepath
+
+# Relevant in ALL analysis modes (zerochecker & mono compatibiliity checker)
 -o|--offset <0>         # Number of samples offset from start/end
 -n|--num <-1>           # Number of samples to analyze before stopping (-1 = entire file)
+
+# Relevant ONLY in zerochecker
 -s|--consec <0>         # Number of consecutive samples past threshold to be considered a non-zero
 -x|--max <1.0>          # Maximum amplitude considered for non-zeros (0.0 - 1.0)
 -y|--min <0.003>        # Minimum amplitude considered for non-zeros (0.0 - 1.0)
