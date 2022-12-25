@@ -40,7 +40,8 @@ namespace
 		const int bufferSize = 4096;
 		juce::HeapBlock<int> tempSpace(bufferSize * numChannels + 64);
 
-		int* tempBuffer[numChannels + 1];
+		std::vector<int*> tempBuffer;
+		tempBuffer.reserve(numChannels + 1);
 		for (int ch{ 0 }; ch < numChannels; ch++)
 		{
 			tempBuffer[ch] = tempSpace.get() + (bufferSize * ch);
@@ -78,7 +79,7 @@ namespace
 				break;
 			}
 
-			reader->read(tempBuffer, numChannels, bufferStart, numThisTime, false);
+			reader->read(&tempBuffer[0], numChannels, bufferStart, numThisTime, false);
 			auto num = numThisTime;
 
 			while (--num >= 0)
@@ -110,7 +111,7 @@ namespace
 					for (int ch{ 0 }; ch < numChannels; ch++)
 					{
 						const int smpl = std::abs(tempBuffer[ch][index]);
-						if (smpl >= magnitudeRangeMinimum && smpl <= magnitudeRangeMaximum)
+						if (smpl >= intMagnitudeRangeMinimum && smpl <= intMagnitudeRangeMaximum)
 						{
 							matches = true;
 							break;
