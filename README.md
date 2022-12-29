@@ -7,8 +7,7 @@ A command line utility for analyzing audio files. **zerochecker** currently feat
 2. [mono compatibility checker](https://github.com/acendan/zerochecker/wiki/2.-mono-compatibility-checker)
 > _...allows you to scan multichannel files for mono folddown compatibility, determining whether all channels contain the same content. This can be used to dramatically reduce space consumption and more accurately control spatialization of content in games._
 
-Please refer to their respective pages in [the wiki](https://github.com/acendan/zerochecker/wiki) for a thorough breakdown of what they are, 
-why you might want to use them, and of course, how to utilize the information they provide in a practical manner.
+Please [visit the wiki](https://github.com/acendan/zerochecker/wiki) for setup instructions, a breakdown of each mode, and of course, how to utilize the results in a practical manner!
 
 Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
 
