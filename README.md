@@ -14,49 +14,6 @@ Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffe
 
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
-## Usage
-In the examples below, it is assumed that `.\zerochecker.exe` refers to the relative directory where you downloaded **zerochecker**.
-You will need to reference the fully qualified or relative path accordingly, i.e. `C:\Users\Aaron\Tools\zerochecker.exe`
-
-```posh
-.\zerochecker.exe [options] <files> <folders>
-
-# Run zerochecker with default analysis mode (no optional parameters). Scan two different files.
-.\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
-
-# Run with mono compatibility checker mode. Scans all audio files in subfolder (recursively).
-.\zerochecker.exe -m 'C:\folder\subfolder\'
-
-# Run with default analysis mode, outputting results to a .csv file. Scan one file.
-.\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\cool_file.wav'
-
-# Run with default analysis mode and various optional parameters set.
-.\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
-```
-
-## Options
-Short options like '-m' should have a space, followed by the desired value.
-Long options like '--min' should have an equals sign instead. Refer to **Usage** above for examples.
-
-```posh
--h|--help               # Prints the list of commands
--v|--version            # Prints the current version number
-
-# Analysis Modes
-# zerochecker default mode, no optional arguments required.
--m|--mono <0.9>         # Mono compatibility checker. Similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.
-
-# Options available in ALL analysis modes (zerochecker & mono compatibiliity checker)
--c|--csv <output.csv>   # Output results to specified .csv filepath
--o|--offset <0>         # Number of samples offset from start/end
--n|--num <-1>           # Number of samples to analyze before stopping (-1 = entire file)
-
-# Options ONLY in zerochecker/default analysis mode
--s|--consec <0>         # Number of consecutive samples past threshold to be considered a non-zero
--x|--max <1.0>          # Maximum amplitude considered for non-zeros (0.0 - 1.0)
--y|--min <0.003>        # Minimum amplitude considered for non-zeros (0.0 - 1.0)
-```
-
 ## WIP
 - Accept text file with filepaths as input
 - Generate Reaper batch converter script 
