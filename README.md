@@ -16,10 +16,11 @@ Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffe
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
 ## WIP
-- [ ] Accept text file with filepaths as input
+- [x] Restructure wiki and include basic setup/usage instructions
+- [ ] Add option for enabling/disabling output statistics
+- [ ] Accept text file with target filepaths as input
 - [ ] Generate Reaper batch converter script 
-- [x] Complete the wiki... (better explanation of using via command line)
-- [ ] Open command line if run via double click in Explorer??
+- [ ] Open command prompt/terminal if run via double click in file explorer
 - [ ] The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
 - [ ] While clicks and pops in looping files are somewhat determined by the offset in timing 
