@@ -13,7 +13,7 @@ A command line utility for analyzing audio files. **zerochecker** currently feat
 
 Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffee!](https://ko-fi.com/acendan_)
 
-![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
+![zerochecker](/zerochecker.png)
 
 ## WIP
 - [x] Restructure wiki and include basic setup/usage instructions
