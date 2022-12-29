@@ -29,7 +29,7 @@ Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffe
   I don't think JUCE currently has an out-of-the-box feature for this.
 - [ ] Blog post/video/tutorial content!
   
-# Special Thanks
+## Special Thanks
 - [wwerk](https://github.com/wwerk), for making Mac builds of zerochecker!
 - [@nickvonkaenel](https://twitter.com/nickvonkaenel), for the initial idea/request to make zerochecker!
 - DenisSamilton, for making [CppConsoleTable](https://github.com/DenisSamilton/CppConsoleTable/)
