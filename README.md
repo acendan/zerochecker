@@ -16,18 +16,18 @@ Aaron Cendan 2022 - [Personal Website](https://aaroncendan.me) | [Buy me a coffe
 ![zerochecker](https://user-images.githubusercontent.com/65690085/186048220-d843ab0d-1e44-40d7-bb7c-a56042da7129.png)
 
 ## WIP
-- Accept text file with filepaths as input
-- Generate Reaper batch converter script 
-- Complete the wiki... (better explanation of using via command line)
-- Open command line if run via double click in Explorer??
-- The help/man page could use a section explaining what all the numbers actually mean/
+- [ ] Accept text file with filepaths as input
+- [ ] Generate Reaper batch converter script 
+- [x] Complete the wiki... (better explanation of using via command line)
+- [ ] Open command line if run via double click in Explorer??
+- [ ] The help/man page could use a section explaining what all the numbers actually mean/
   how you can interpret the data.
-- While clicks and pops in looping files are somewhat determined by the offset in timing 
+- [ ] While clicks and pops in looping files are somewhat determined by the offset in timing 
   and amplitude between first and last samples, quantifying the 'clickiness' could include some
   pretty [DSP-heavy math](https://ofai.at/papers/oefai-tr-2006-12.pdf) concerning their 
   spectral content, phase, and complex domain representation. Need to investigate further, as 
   I don't think JUCE currently has an out-of-the-box feature for this.
-- Blog post/video/tutorial content!
+- [ ] Blog post/video/tutorial content!
   
 # Special Thanks
 - [wwerk](https://github.com/wwerk), for making Mac builds of zerochecker!
