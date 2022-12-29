@@ -1,7 +1,7 @@
 # zerochecker
 A command line utility for analyzing audio files. **zerochecker** currently features two different analysis modes:
 
-1. [zerochecker](https://github.com/acendan/zerochecker/wiki/1.-zerochecker)
+1. [zerochecker (default)](https://github.com/acendan/zerochecker/wiki/1.-zerochecker)
 > _...allows you to locate the first and last non-zero samples in audio files. This can be used to identify leading/trailing silence, the likelihood of clicking sounds in looping files, or alignment differences between assets that should be tightly synchronized._
 
 2. [mono compatibility checker](https://github.com/acendan/zerochecker/wiki/2.-mono-compatibility-checker)
