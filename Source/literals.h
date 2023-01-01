@@ -37,19 +37,19 @@ namespace zero::ltrl
     Aaron Cendan 2022 - https://aaroncendan.me | https://ko-fi.com/acendan_
 
 USAGE:
-	.\zerochecker.exe [options] <files> <folders>
+    .\zerochecker.exe [options] <files> <folders>
 
-	# Run zerochecker, default analysis mode. No optional parameters required. Scan two different files.
-	.\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
+    # Run zerochecker, default analysis mode. No optional parameters required. Scan two different files.
+    .\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
 
-	# Run monochecker, mono compatibility mode [-m]. Scans all audio files in subfolder (recursively).
-	.\zerochecker.exe -m 'C:\folder\subfolder\'
+    # Run monochecker, mono compatibility mode [-m]. Scans all audio files in subfolder (recursively).
+    .\zerochecker.exe -m 'C:\folder\subfolder\'
 
-	# Run zerochecker, outputting results to a .csv file.
-	.\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\subfolder\'
+    # Run zerochecker, outputting results to a .csv file.
+    .\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\subfolder\'
 
-	# Run zerochecker, various optional parameters set.
-	.\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
+    # Run zerochecker, various optional parameters set.
+    .\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
 
 NOTE:
     Short options like '-x' should have a space, followed by the desired value.
