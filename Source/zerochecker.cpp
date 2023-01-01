@@ -10,6 +10,7 @@
 
 #include "zerochecker.h"
 #include "console.h"
+#include "literals.h"
 
 #include <execution>
 
@@ -46,6 +47,19 @@ Checker::Checker()
 			  }});
 	addCommand(m_files.cmd);
 
+	// Mono analysis mode
+	m_monoAnalysisThreshold.cmd = juce::ConsoleApplication::Command(
+			{ "-m|--mono", "-m|--mono <0.9>",
+			  "monochecker. Similarity threshold (0.0 - 1.0), where 1.0 is identical across all channels.",
+			  "Overrides zerochecking to scan channels for mono compatibility.",
+			  [this](const juce::ArgumentList& args)
+			  {
+				  m_analysisMode = AnalysisMode::MONO_COMPATIBILITY_CHECKER;
+				  m_monoAnalysisThreshold.val = std::clamp(
+						  args.getValueForOption("-m|--mono").getDoubleValue(), 0.0, 1.0);
+			  }});
+	addCommand(m_monoAnalysisThreshold.cmd);
+
 	// Parse optional csv
 	m_csv.cmd = juce::ConsoleApplication::Command(
 			{ "-c|--csv", "-c|--csv <output.csv>", "Specify output .csv filepath",
@@ -55,19 +69,6 @@ Checker::Checker()
 				  m_csv.val = args.getValueForOption("-c|--csv");
 			  }});
 	addCommand(m_csv.cmd);
-
-	// Mono analysis mode
-	m_monoAnalysisThreshold.cmd = juce::ConsoleApplication::Command(
-			{ "-m|--mono", "-m|--mono <0.9>",
-			  "Mono folddown compatibility checker. Set threshold (0.0 - 1.0) for output, where 1.0 is identical across all channels.",
-			  "Overrides zerochecking to scan channels for mono folddown compatibility.",
-			  [this](const juce::ArgumentList& args)
-			  {
-				  m_analysisMode = AnalysisMode::MONO_COMPATIBILITY_CHECKER;
-				  m_monoAnalysisThreshold.val = std::clamp(
-						  args.getValueForOption("-m|--mono").getDoubleValue(), 0.0, 1.0);
-			  }});
-	addCommand(m_monoAnalysisThreshold.cmd);
 
 	// Sample offset from start or end
 	m_sampleOffset.cmd = juce::ConsoleApplication::Command(
@@ -123,21 +124,7 @@ Checker::Checker()
 
 	// Help & version
 	addHelpCommand("-h|--help", juce::String("ABOUT:\n    zerochecker v") + ProjectInfo::versionString +
-	                            R"( - https://github.com/acendan/zerochecker
-    Aaron Cendan 2022 - https://aaroncendan.me | https://ko-fi.com/acendan_
-
-USAGE:
-    .\zerochecker.exe [options] <files> <folders>
-    .\zerochecker.exe 'C:\folder\cool_file.wav' 'C:\folder\weird_file.flac'
-    .\zerochecker.exe 'C:\folder\subfolder\'
-    .\zerochecker.exe -c 'C:\folder\output_log.csv' 'C:\folder\cool_file.wav'
-    .\zerochecker.exe --min=0.1 --consec=5 'C:\folder\weird_file.flac'
-
-NOTE:
-    Short options like '-x' should have a space, followed by the desired value.
-    Long options like '--max' should have an equals sign instead. Refer to USAGE above.
-
-OPTIONS:)", true);
+	                            ltrl::helpText, true);
 	addVersionCommand("-v|--version", ProjectInfo::versionString);
 }
 
@@ -178,8 +165,7 @@ int Checker::run(const juce::ArgumentList& args)
 
 void Checker::processFiles()
 {
-	Console console{ m_csv.val, static_cast<int>(m_files.val.size()),
-	                 m_analysisMode == AnalysisMode::MONO_COMPATIBILITY_CHECKER };
+	Console console{ m_csv.val, static_cast<int>(m_files.val.size()), m_analysisMode };
 
 	std::mutex m;
 

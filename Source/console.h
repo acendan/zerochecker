@@ -12,6 +12,7 @@
 #pragma once
 
 #include "file.h"
+#include "zerochecker.h"
 
 #include <JuceHeader.h>
 #include <CppConsoleTable.hpp>
@@ -22,7 +23,7 @@ namespace zero
 	{
 	public:
 		explicit Console(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0,
-		                 bool monoAnalysis = false);
+		                 Checker::AnalysisMode analysisMode = Checker::AnalysisMode::ZERO_CHECKER);
 
 		void print();
 
@@ -36,6 +37,7 @@ namespace zero
 
 	private:
 		samilton::ConsoleTable m_table{};
+		Checker::AnalysisMode m_analysisMode{};
 
 		std::optional<juce::File> m_csvFile{};
 		std::optional<juce::String> m_csvText{};
@@ -43,7 +45,6 @@ namespace zero
 		float m_progress{ 0.0f };
 		int m_progressBarWidth{ 70 };
 		int m_numItems{ 0 };
-		bool m_monoAnalysisMode{ false };
 
 		// Analysis stats
 		samilton::ConsoleTable m_stats{};

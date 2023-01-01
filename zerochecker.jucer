@@ -3,7 +3,7 @@
 <JUCERPROJECT id="DkDVB1" name="zerochecker" projectType="consoleapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               cppLanguageStandard="20" headerPath="../../Vendor/CppConsoleTable"
-              version="0.0.6" companyName="Aaron Cendan" companyWebsite="https://aaroncendan.me"
+              version="0.0.7" companyName="Aaron Cendan" companyWebsite="https://aaroncendan.me"
               companyEmail="aaron.cendan@gmail.com">
   <MAINGROUP id="mNXs8E" name="zerochecker">
     <GROUP id="{AD834137-EC2D-BB9B-88D7-DAB72A900D2F}" name="Source">
@@ -17,6 +17,7 @@
       <FILE id="bijOX6" name="command.h" compile="0" resource="0" file="Source/command.h"/>
       <FILE id="FdqFsh" name="console.h" compile="0" resource="0" file="Source/console.h"/>
       <FILE id="YUknv2" name="file.h" compile="0" resource="0" file="Source/file.h"/>
+      <FILE id="Jb2ZCo" name="literals.h" compile="0" resource="0" file="Source/literals.h"/>
       <FILE id="KYzerg" name="zerochecker.h" compile="0" resource="0" file="Source/zerochecker.h"/>
     </GROUP>
   </MAINGROUP>
