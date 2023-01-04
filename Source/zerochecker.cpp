@@ -215,10 +215,18 @@ void Checker::processFiles()
 	switch (m_analysisMode)
 	{
 	case AnalysisMode::ZERO_CHECKER:
-		std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), zeroCheck);
+#if defined (JUCE_MAC)
+        std::for_each(m_files.val.begin(), m_files.val.end(), zeroCheck);
+#else
+        std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), zeroCheck);
+#endif
 		break;
 	case AnalysisMode::MONO_COMPATIBILITY_CHECKER:
-		std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), monoAnalyze);
+#if defined (JUCE_MAC)
+		std::for_each(m_files.val.begin(), m_files.val.end(), monoAnalyze);
+#else
+        std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), monoAnalyze);
+#endif
 		break;
 	}
 

@@ -22,7 +22,7 @@ namespace zero
 
 		explicit Command(T t) : val{ std::move(t) } { }
 
-		auto operator<=>(const auto& that);
+		auto operator<=>(const Command& that);
 
 		juce::ConsoleApplication::Command cmd{};
 		T val{};

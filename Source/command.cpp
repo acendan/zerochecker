@@ -14,7 +14,7 @@
 using namespace zero;
 
 template<typename T>
-auto Command<T>::operator<=>(const auto& that)
+auto Command<T>::operator<=>(const Command& that)
 {
 	return this->val <=> that.val;
 }
