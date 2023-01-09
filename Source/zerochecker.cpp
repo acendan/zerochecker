@@ -16,6 +16,42 @@
 
 using namespace zero;
 
+namespace
+{
+	auto getWavFlacWriter(const juce::File& file, const juce::AudioFormatReader& reader,
+	                      const int numChannels) -> std::unique_ptr<juce::AudioFormatWriter>
+	{
+		auto makeWriter = [&](auto& format)
+		{
+			std::unique_ptr<juce::AudioFormatWriter> writer{ format.createWriterFor(
+					new juce::FileOutputStream(file),
+					reader.sampleRate, numChannels, reader.bitsPerSample, reader.metadataValues, 0) };
+			return std::move(writer);
+		};
+
+		if (file.hasFileExtension("wav"))
+		{
+			juce::WavAudioFormat format;
+			return std::move(makeWriter(format));
+		}
+		else if (file.hasFileExtension("flac"))
+		{
+			juce::FlacAudioFormat format;
+			return std::move(makeWriter(format));
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	void eraseFileContents(juce::FileOutputStream& fileStream)
+	{
+		fileStream.setPosition(0);
+		fileStream.truncate();
+	}
+}
+
 Checker::Checker()
 {
 	m_formatMngr.registerBasicFormats();
@@ -157,78 +193,172 @@ int Checker::run(const juce::ArgumentList& args)
 	// Run zerochecker
 	if (!m_files.val.empty())
 	{
-		processFiles();
+		scanFiles();
 	}
 
 	return 0;
 }
 
-void Checker::processFiles()
+void Checker::updateProgress(std::mutex& m) const
 {
-	Console console{ m_csv.val, static_cast<int>(m_files.val.size()), m_analysisMode };
+	std::lock_guard<std::mutex> guard(m);
+	m_console->progressBar();
+}
+
+void Checker::appendFile(std::mutex& m, const File& zeroFile) const
+{
+	std::lock_guard<std::mutex> guard(m);
+	m_console->append(zeroFile);
+}
+
+void Checker::scanFiles()
+{
+	m_console = std::make_unique<Console>(*this, m_csv.val, static_cast<int>(m_files.val.size()));
+	jassert(m_console);
 
 	std::mutex m;
 
-	auto updateProgress = [&m, &console]()
-	{
-		std::lock_guard<std::mutex> guard(m);
-		console.progressBar();
-	};
-
-	auto appendZeroFile = [&m, &console](const File& zeroFile)
-	{
-		std::lock_guard<std::mutex> guard(m);
-		console.append(zeroFile);
-	};
-
 	auto monoAnalyze = [&](File& zeroFile)
 	{
-		updateProgress();
-		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
+		updateProgress(m);
+		if (auto reader = std::unique_ptr<juce::AudioFormatReader>(m_formatMngr.createReaderFor(zeroFile.m_file)))
 		{
-			zeroFile.calculateMonoCompatibility(reader, m_sampleOffset.val, m_numSamplesToSearch.val);
+			zeroFile.calculateMonoCompatibility(reader.get(), m_sampleOffset.val, m_numSamplesToSearch.val);
 
 			// Only append files above threshold
 			if (zeroFile.m_monoCompatibility > m_monoAnalysisThreshold.val)
 			{
-				appendZeroFile(zeroFile);
+				appendFile(m, zeroFile);
 			}
-
-			delete reader;
 		}
 	};
 
 	auto zeroCheck = [&](File& zeroFile)
 	{
-		updateProgress();
-		if (auto* reader = m_formatMngr.createReaderFor(zeroFile.m_file))
+		updateProgress(m);
+		if (auto reader = std::unique_ptr<juce::AudioFormatReader>(m_formatMngr.createReaderFor(zeroFile.m_file)))
 		{
-			zeroFile.calculate(reader, m_sampleOffset.val, m_numSamplesToSearch.val, m_magnitudeRangeMin.val,
+			zeroFile.calculate(reader.get(), m_sampleOffset.val, m_numSamplesToSearch.val, m_magnitudeRangeMin.val,
 			                   m_magnitudeRangeMax.val, m_minConsecutiveSamples.val);
-			appendZeroFile(zeroFile);
-
-			delete reader;
+			appendFile(m, zeroFile);
 		}
 	};
 
-	// Execute in parallel
 	switch (m_analysisMode)
 	{
 	case AnalysisMode::ZERO_CHECKER:
-#if defined (JUCE_MAC)
-        std::for_each(m_files.val.begin(), m_files.val.end(), zeroCheck);
-#else
-        std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), zeroCheck);
-#endif
-		break;
-	case AnalysisMode::MONO_COMPATIBILITY_CHECKER:
-#if defined (JUCE_MAC)
-		std::for_each(m_files.val.begin(), m_files.val.end(), monoAnalyze);
-#else
-        std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), monoAnalyze);
-#endif
+	{
+		for_each(zeroCheck);
 		break;
 	}
+	case AnalysisMode::MONO_COMPATIBILITY_CHECKER:
+	{
+		for_each(monoAnalyze);
+		break;
+	}
+	}
 
-	console.print();
+	m_console->print();
+}
+
+void Checker::processFiles()
+{
+	jassert(m_console);
+
+	std::mutex m;
+
+	auto trimToZeroes = [&](File& zeroFile)
+	{
+		auto reader{ std::unique_ptr<juce::AudioFormatReader>(m_formatMngr.createReaderFor(zeroFile.m_file)) };
+		if (reader == nullptr)
+		{
+			return;
+		}
+		updateProgress(m);
+
+		const auto numChannels{ static_cast<int>(reader->numChannels) };
+		const auto startSampleRead{ static_cast<int>(zeroFile.m_firstNonZeroSample) };
+		const auto startSampleWrite{ 0 };
+		const auto endSample{ static_cast<int>(reader->lengthInSamples - zeroFile.m_lastNonZeroSample) };
+		const auto numSamples{ endSample - startSampleRead };
+
+		// Save middle, trimmed section of file to buffer
+		juce::AudioBuffer<float> buffer{ numChannels, numSamples };
+		reader->read(&buffer, startSampleWrite, numSamples, startSampleRead, true, true);
+
+		// Delete existing file contents
+		juce::FileOutputStream fileStream(zeroFile.m_file);
+		if (fileStream.failedToOpen())
+		{
+			return;
+		}
+		eraseFileContents(fileStream);
+
+		// Write from buffer
+		if (auto writer = getWavFlacWriter(zeroFile.m_file, *reader, numChannels))
+		{
+			writer->writeFromAudioSampleBuffer(buffer, startSampleWrite, numSamples);
+		}
+	};
+
+	auto convertToMono = [&](File& zeroFile)
+	{
+		if (zeroFile.m_monoCompatibility <= m_monoAnalysisThreshold.val)
+		{
+			return;
+		}
+		auto reader{ std::unique_ptr<juce::AudioFormatReader>(m_formatMngr.createReaderFor(zeroFile.m_file)) };
+		if (reader == nullptr)
+		{
+			return;
+		}
+		updateProgress(m);
+
+		const auto numChannels{ 1 };
+		const auto numSamples{ static_cast<int>(reader->lengthInSamples) };
+		const auto startSample{ 0 };
+
+		// Save first channel to buffer
+		juce::AudioBuffer<float> buffer{ numChannels, static_cast<int>(numSamples) };
+		reader->read(&buffer, startSample, numSamples, startSample, true, false);
+
+		// Delete existing file contents
+		juce::FileOutputStream fileStream(zeroFile.m_file);
+		if (fileStream.failedToOpen())
+		{
+			return;
+		}
+		eraseFileContents(fileStream);
+
+		// Write first channel from buffer
+		if (auto writer = getWavFlacWriter(zeroFile.m_file, *reader, numChannels))
+		{
+			writer->writeFromAudioSampleBuffer(buffer, startSample, numSamples);
+		}
+	};
+
+	switch (m_analysisMode)
+	{
+	case AnalysisMode::ZERO_CHECKER:
+	{
+		m_console->progressBar(m_files.val.size());
+		for_each(trimToZeroes);
+		break;
+	}
+	case AnalysisMode::MONO_COMPATIBILITY_CHECKER:
+	{
+		m_console->progressBar(m_numMonoFiles);
+		for_each(convertToMono);
+		break;
+	}
+	}
+}
+
+void Checker::for_each(std::function<void(zero::File&)> function)
+{
+#if defined (JUCE_MAC)
+	std::for_each(m_files.val.begin(), m_files.val.end(), function);
+#else
+	std::for_each(std::execution::par_unseq, m_files.val.begin(), m_files.val.end(), function);
+#endif
 }

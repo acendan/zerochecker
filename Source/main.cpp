@@ -12,6 +12,13 @@
 
 int main(int argc, char* argv[])
 {
-	zero::Checker zerochecker;
-	return zerochecker.run({ argc, argv });
+	try
+	{
+		zero::Checker zerochecker;
+		return zerochecker.run({ argc, argv });
+	}
+	catch (...)
+	{
+		return 1;
+	}
 }

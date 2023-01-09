@@ -14,9 +14,16 @@
 
 using namespace zero;
 
-Console::Console(const std::optional<juce::String>& csv /*= std::nullopt*/, int numItems,
-                 Checker::AnalysisMode analysisMode) :
-		m_numItems{ numItems }, m_analysisMode{ analysisMode }
+namespace
+{
+	void ignoreLine()
+	{
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+}
+
+Console::Console(Checker& checker, const std::optional<juce::String>& csv /*= std::nullopt*/, int numItems) :
+		m_numItems{ numItems }, m_checker{ checker }
 {
 	// Init table
 	m_table.clear();
@@ -50,7 +57,7 @@ Console::Console(const std::optional<juce::String>& csv /*= std::nullopt*/, int 
 	}
 
 	// Table headers
-	switch (m_analysisMode)
+	switch (m_checker.m_analysisMode)
 	{
 	case Checker::AnalysisMode::ZERO_CHECKER:
 	{
@@ -70,7 +77,7 @@ void Console::print()
 {
 	m_endTime = juce::Time::getCurrentTime();
 
-	switch (m_analysisMode)
+	switch (m_checker.m_analysisMode)
 	{
 	case Checker::AnalysisMode::ZERO_CHECKER:
 	{
@@ -87,14 +94,11 @@ void Console::print()
 	std::cout << m_table << ltrl::endl;
 
 	printStats();
+	printCsv();
 
-	if (m_csvFile.has_value() && m_csvText.has_value() && m_csvFile->existsAsFile() && !m_csvText->isEmpty())
-	{
-		m_csvFile->replaceWithText(*m_csvText);
-		std::cout << "Output CSV to: " << m_csvFile->getFullPathName() << ltrl::endl;
-	}
+	std::cout << ltrl::divider << ltrl::endl;
 
-	std::cout << ltrl::endl << ltrl::divider << ltrl::endl;
+	promptProcess();
 }
 
 void Console::printStats()
@@ -104,7 +108,7 @@ void Console::printStats()
 	const auto duration{ m_endTime - m_startTime };
 	m_stats.addRow({ "Total execution time", duration.getApproximateDescription().toRawUTF8() });
 
-	switch (m_analysisMode)
+	switch (m_checker.m_analysisMode)
 	{
 	case Checker::AnalysisMode::ZERO_CHECKER:
 	{
@@ -113,14 +117,73 @@ void Console::printStats()
 	}
 	case Checker::AnalysisMode::MONO_COMPATIBILITY_CHECKER:
 	{
-		m_stats.addRow({ "Number of mono compatible files", std::to_string(m_numMonoFiles).c_str() });
+		m_stats.addRow({ "Number of mono compatible files", std::to_string(m_checker.m_numMonoFiles).c_str() });
 		m_stats.addRow({ "Potential space savings by converting to mono",
-		                 juce::File::descriptionOfSizeInBytes(m_sizeSavingsBytes).toRawUTF8() });
+		                 juce::File::descriptionOfSizeInBytes(m_checker.m_sizeSavingsBytes).toRawUTF8() });
 		break;
 	}
 	}
 
 	std::cout << m_stats << ltrl::endl;
+}
+
+void Console::printCsv()
+{
+	if (m_csvFile.has_value() && m_csvText.has_value() && m_csvFile->existsAsFile() && !m_csvText->isEmpty())
+	{
+		m_csvFile->replaceWithText(*m_csvText);
+		std::cout << "Output CSV to: " << m_csvFile->getFullPathName() << ltrl::endl;
+	}
+}
+
+void Console::promptProcess()
+{
+	switch (m_checker.m_analysisMode)
+	{
+	case Checker::AnalysisMode::ZERO_CHECKER:
+	{
+		if (promptContinue("Would you like to trim all files to first and last non-zeroes?"))
+		{
+			m_checker.processFiles();
+			std::cout << ltrl::endl << "Trimmed " << m_checker.m_files.val.size() << " files!" << ltrl::endl;
+		}
+		break;
+	}
+	case Checker::AnalysisMode::MONO_COMPATIBILITY_CHECKER:
+	{
+		if (m_checker.m_numMonoFiles > 0 &&
+		    promptContinue("Would you like to convert all mono-compatible files to mono?"))
+		{
+			m_checker.processFiles();
+			std::cout << ltrl::endl << "Converted " << m_checker.m_numMonoFiles << " files to mono!" << ltrl::endl;
+		}
+		break;
+	}
+	}
+}
+
+bool Console::promptContinue(std::string_view question)
+{
+	while (true) // Loop until user enters a valid input
+	{
+		std::cout << question << " y/n: ";
+		char yesNo{};
+		std::cin >> yesNo;
+
+		// Check for failed extraction
+		if (!std::cin) // has a previous extraction failed?
+		{
+			// yep, so let's handle the failure
+			std::cin.clear(); // put us back in 'normal' operation mode
+			ignoreLine(); // and remove the bad input
+			std::cerr << "Oops, that input is invalid.  Please try again.\n";
+		}
+		else
+		{
+			ignoreLine(); // remove any extraneous input
+			return (yesNo == 'y' || yesNo == 'Y');
+		}
+	}
 }
 
 void Console::append(const std::initializer_list<const char*>& row, const juce::String& fullPath)
@@ -153,7 +216,7 @@ void Console::append(const std::initializer_list<const char*>& row, const juce::
 
 void Console::append(const File& file)
 {
-	switch (m_analysisMode)
+	switch (m_checker.m_analysisMode)
 	{
 	case Checker::AnalysisMode::ZERO_CHECKER:
 	{
@@ -169,8 +232,8 @@ void Console::append(const File& file)
 	}
 	case Checker::AnalysisMode::MONO_COMPATIBILITY_CHECKER:
 	{
-		m_numMonoFiles++;
-		m_sizeSavingsBytes += file.m_file.getSize() - (file.m_file.getSize() / file.m_numChannels);
+		m_checker.m_numMonoFiles++;
+		m_checker.m_sizeSavingsBytes += file.m_file.getSize() - (file.m_file.getSize() / file.m_numChannels);
 
 		auto monoCompatibility{ std::to_string(file.m_monoCompatibility) };
 		monoCompatibility.resize(6);
@@ -181,9 +244,18 @@ void Console::append(const File& file)
 	}
 }
 
-void Console::progressBar()
+void Console::progressBar(std::optional<int> resetNumItems /*= std::nullopt*/)
 {
 	static auto item{ 0 };
+
+	if (resetNumItems.has_value())
+	{
+		item = 0;
+		m_numItems = *resetNumItems;
+		m_progress = 0.0f;
+		return;
+	}
+
 	if (m_numItems > 0)
 	{
 		std::cout << "[";

@@ -12,20 +12,26 @@
 
 #include "file.h"
 #include "command.h"
+#include "console.h"
 
 #include <JuceHeader.h>
 #include <optional>
 
 namespace zero
 {
+	class Console;
+
 	class Checker : public juce::ConsoleApplication
 	{
 	public:
 		Checker();
 
 		int run(const juce::ArgumentList& args);
-
+		void updateProgress(std::mutex& m) const;
+		void appendFile(std::mutex& m, const File& zeroFile) const;
+		void scanFiles();
 		void processFiles();
+		void for_each(std::function<void(zero::File&)> function);
 
 		enum class AnalysisMode
 		{
@@ -42,7 +48,12 @@ namespace zero
 		zero::Command<int> m_minConsecutiveSamples{ 0 };
 		zero::Command<double> m_monoAnalysisThreshold{ 0.99 };
 
+		int m_numMonoFiles{ 0 };
+		juce::int64 m_sizeSavingsBytes{ 0 };
+
 	private:
+		std::unique_ptr<Console> m_console{ nullptr };
+
 		juce::AudioFormatManager m_formatMngr{};
 	};
 }

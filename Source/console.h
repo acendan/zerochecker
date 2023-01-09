@@ -19,25 +19,32 @@
 
 namespace zero
 {
+	class Checker;
+
 	class Console
 	{
 	public:
-		explicit Console(const std::optional<juce::String>& csv = std::nullopt, int numItems = 0,
-		                 Checker::AnalysisMode analysisMode = Checker::AnalysisMode::ZERO_CHECKER);
+		Console(Checker& checker, const std::optional<juce::String>& csv = std::nullopt, int numItems = 0);
 
 		void print();
 
 		void printStats();
+		void printCsv();
+
+		void promptProcess();
+		static bool promptContinue(std::string_view question);
 
 		void append(const std::initializer_list<const char*>& row, const juce::String& fullPath = "");
 
 		void append(const zero::File& file);
 
-		void progressBar();
+		void progressBar(std::optional<int> resetNumItems = std::nullopt);
 
 	private:
+		Checker& m_checker;
+
 		samilton::ConsoleTable m_table{};
-		Checker::AnalysisMode m_analysisMode{};
+		samilton::ConsoleTable m_stats{};
 
 		std::optional<juce::File> m_csvFile{};
 		std::optional<juce::String> m_csvText{};
@@ -46,10 +53,6 @@ namespace zero
 		int m_progressBarWidth{ 70 };
 		int m_numItems{ 0 };
 
-		// Analysis stats
-		samilton::ConsoleTable m_stats{};
-		int m_numMonoFiles{ 0 };
-		juce::int64 m_sizeSavingsBytes{ 0 };
 		juce::Time m_startTime{};
 		juce::Time m_endTime{};
 	};
