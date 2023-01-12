@@ -31,6 +31,8 @@ namespace
 	                           double magnitudeRangeMaximum,
 	                           int minimumConsecutiveSamples)
 	{
+		jassert (magnitudeRangeMaximum > magnitudeRangeMinimum);
+		
 		if (numSamplesToSearch == 0)
 		{
 			return -1;
@@ -38,28 +40,10 @@ namespace
 
 		const int numChannels{ static_cast<int>(reader->numChannels) };
 		const int bufferSize = 4096;
-		juce::HeapBlock<int> tempSpace(bufferSize * numChannels + 64);
-
-		std::vector<int*> tempBuffer;
-		tempBuffer.reserve(numChannels + 1);
-		for (int ch{ 0 }; ch < numChannels; ch++)
-		{
-			tempBuffer[ch] = tempSpace.get() + (bufferSize * ch);
-		}
-		tempBuffer[numChannels] = nullptr;
+		juce::AudioBuffer<float> tempBuffer{ numChannels, bufferSize };
 
 		int consecutive = 0;
 		juce::int64 firstMatchPos = -1;
-
-		jassert (magnitudeRangeMaximum > magnitudeRangeMinimum);
-
-		auto doubleMin = juce::jlimit(0.0, (double) std::numeric_limits<int>::max(),
-		                              magnitudeRangeMinimum * std::numeric_limits<int>::max());
-		auto doubleMax = juce::jlimit(doubleMin, (double) std::numeric_limits<int>::max(),
-		                              magnitudeRangeMaximum * std::numeric_limits<int>::max());
-		auto intMagnitudeRangeMinimum = juce::roundToInt(doubleMin);
-		auto intMagnitudeRangeMaximum = juce::roundToInt(doubleMax);
-
 		juce::int64 startSample = (searchDirection == SearchDirection::FORWARD) ?
 		                          startSampleOffset : reader->lengthInSamples - startSampleOffset;
 
@@ -79,7 +63,7 @@ namespace
 				break;
 			}
 
-			reader->read(&tempBuffer[0], numChannels, bufferStart, numThisTime, false);
+			reader->read(&tempBuffer, 0, numThisTime, bufferStart, false, false);
 			auto num = numThisTime;
 
 			while (--num >= 0)
@@ -93,29 +77,13 @@ namespace
 				auto index = static_cast<int>((searchDirection == SearchDirection::FORWARD) ?
 				                              (startSample - bufferStart) : (startSample - bufferStart - 1));
 
-				// TODO: Return the channel where matches = true, if applicable. Display in console output...
-				if (reader->usesFloatingPointData)
+				for (int ch{ 0 }; ch < numChannels; ch++)
 				{
-					for (int ch{ 0 }; ch < numChannels; ch++)
+					const float smpl = std::abs(tempBuffer.getReadPointer(ch)[index]);
+					if (smpl >= magnitudeRangeMinimum && smpl <= magnitudeRangeMaximum)
 					{
-						const float smpl = std::abs(((float*) tempBuffer[ch])[index]);
-						if (smpl >= magnitudeRangeMinimum && smpl <= magnitudeRangeMaximum)
-						{
-							matches = true;
-							break;
-						}
-					}
-				}
-				else
-				{
-					for (int ch{ 0 }; ch < numChannels; ch++)
-					{
-						const int smpl = std::abs(tempBuffer[ch][index]);
-						if (smpl >= intMagnitudeRangeMinimum && smpl <= intMagnitudeRangeMaximum)
-						{
-							matches = true;
-							break;
-						}
+						matches = true;
+						break;
 					}
 				}
 

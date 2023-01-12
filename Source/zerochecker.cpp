@@ -269,12 +269,16 @@ void Checker::processFiles()
 
 	auto trimToZeroes = [&](File& zeroFile)
 	{
+		updateProgress(m);
+		if (zeroFile.m_firstNonZeroSample < 0 || zeroFile.m_lastNonZeroSample < 0)
+		{
+			return;
+		}
 		auto reader{ std::unique_ptr<juce::AudioFormatReader>(m_formatMngr.createReaderFor(zeroFile.m_file)) };
 		if (reader == nullptr)
 		{
 			return;
 		}
-		updateProgress(m);
 
 		const auto numChannels{ static_cast<int>(reader->numChannels) };
 		const auto startSampleRead{ static_cast<int>(zeroFile.m_firstNonZeroSample) };
@@ -286,23 +290,21 @@ void Checker::processFiles()
 		juce::AudioBuffer<float> buffer{ numChannels, numSamples };
 		reader->read(&buffer, startSampleWrite, numSamples, startSampleRead, true, true);
 
-		// Delete existing file contents
 		juce::FileOutputStream fileStream(zeroFile.m_file);
 		if (fileStream.failedToOpen())
 		{
 			return;
 		}
-		eraseFileContents(fileStream);
-
-		// Write from buffer
 		if (auto writer = getWavFlacWriter(zeroFile.m_file, *reader, numChannels))
 		{
+			eraseFileContents(fileStream);
 			writer->writeFromAudioSampleBuffer(buffer, startSampleWrite, numSamples);
 		}
 	};
 
 	auto convertToMono = [&](File& zeroFile)
 	{
+		updateProgress(m);
 		if (zeroFile.m_monoCompatibility <= m_monoAnalysisThreshold.val)
 		{
 			return;
@@ -312,7 +314,6 @@ void Checker::processFiles()
 		{
 			return;
 		}
-		updateProgress(m);
 
 		const auto numChannels{ 1 };
 		const auto numSamples{ static_cast<int>(reader->lengthInSamples) };
@@ -322,17 +323,14 @@ void Checker::processFiles()
 		juce::AudioBuffer<float> buffer{ numChannels, static_cast<int>(numSamples) };
 		reader->read(&buffer, startSample, numSamples, startSample, true, false);
 
-		// Delete existing file contents
 		juce::FileOutputStream fileStream(zeroFile.m_file);
 		if (fileStream.failedToOpen())
 		{
 			return;
 		}
-		eraseFileContents(fileStream);
-
-		// Write first channel from buffer
 		if (auto writer = getWavFlacWriter(zeroFile.m_file, *reader, numChannels))
 		{
+			eraseFileContents(fileStream);
 			writer->writeFromAudioSampleBuffer(buffer, startSample, numSamples);
 		}
 	};
@@ -341,7 +339,7 @@ void Checker::processFiles()
 	{
 	case AnalysisMode::ZERO_CHECKER:
 	{
-		m_console->progressBar(m_files.val.size());
+		m_console->progressBar(static_cast<int>(m_files.val.size()));
 		for_each(trimToZeroes);
 		break;
 	}
