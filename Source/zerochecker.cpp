@@ -295,9 +295,9 @@ void Checker::processFiles()
 		{
 			return;
 		}
+		eraseFileContents(fileStream);
 		if (auto writer = getWavFlacWriter(zeroFile.m_file, *reader, numChannels))
 		{
-			eraseFileContents(fileStream);
 			writer->writeFromAudioSampleBuffer(buffer, startSampleWrite, numSamples);
 		}
 	};
@@ -328,9 +328,9 @@ void Checker::processFiles()
 		{
 			return;
 		}
+		eraseFileContents(fileStream);
 		if (auto writer = getWavFlacWriter(zeroFile.m_file, *reader, numChannels))
 		{
-			eraseFileContents(fileStream);
 			writer->writeFromAudioSampleBuffer(buffer, startSample, numSamples);
 		}
 	};
