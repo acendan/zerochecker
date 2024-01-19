@@ -1,10 +1,10 @@
 # zerochecker
 A command line utility for analyzing audio files. **zerochecker** currently features two different *analysis modes*, or ways of examining audio files:
 
-1. [zerochecker (default)](https://github.com/acendan/zerochecker/wiki/1.-zerochecker)
+1. zerochecker (default)
 > _...allows you to locate the first and last non-zero samples in audio files. This can be used to identify leading/trailing silence, the likelihood of clicking sounds in looping files, or alignment differences between assets that should be tightly synchronized._
 
-2. [monochecker](https://github.com/acendan/zerochecker/wiki/2.-monochecker)
+2. monochecker
 > _...allows you to scan multichannel files for mono compatibility, determining whether all channels contain the same content. This can be used to dramatically reduce space consumption and more accurately control spatialization of assets in games._
 
 **Please [visit the wiki](https://github.com/acendan/zerochecker/wiki)** for setup instructions, a breakdown of each analysis mode, and of course, how to utilize the results in a practical manner!
